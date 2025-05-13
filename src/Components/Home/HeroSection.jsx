@@ -32,8 +32,7 @@ const HeroSection = () => {
     <div className="flex-1 flex flex-col items-center justify-center text-center px-4 sm:px-6 z-10 font-roboto">
       <h1
         ref={headerRef}
-        className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight"
-      >
+        className="text-4xl md:text-5xl lg:text-7xl font-black tracking-tight leading-tight">
         You imagine it, we build it
       </h1>
       <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mb-8">
