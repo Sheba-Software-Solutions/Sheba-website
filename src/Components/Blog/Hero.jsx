@@ -24,7 +24,7 @@ export default function Hero() {
                                 Dive into the latest tech trends, innovations, and insights from industry experts.
                             </p>
                             <div className="flex flex-col sm:flex-row justify-center gap-4">
-                                <Button className="tech-button flex items-center gap-2 bg-[#2BA6FF] hover:bg-opacity-80 text-white font-semibold">
+                                <Button className="tech-button flex items-center gap-2 bg-[#2BA6FF] hover:bg-opacity-80 text-white">
                                     Latest Articles
                                     <ArrowRight size={16} />
                                 </Button>
