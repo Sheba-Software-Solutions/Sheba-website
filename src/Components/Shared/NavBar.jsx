@@ -87,7 +87,7 @@ const NavBar = () => {
 
           {/* Request Demo Button (Desktop) */}
           <div className="hidden lg:block">
-            <button className="bg-white text-gray-900 px-5 py-2 rounded-full hover:bg-gray-200 transition-colors duration-200 text-sm font-semibold">
+            <button className="bg-white text-gray-900 px-5 py-2 rounded-full hover:bg-amber-900 hover:text-white  transition-colors duration-200 text-sm font-semibold">
               Request Demo
             </button>
           </div>

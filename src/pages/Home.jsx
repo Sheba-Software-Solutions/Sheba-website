@@ -5,6 +5,11 @@ import Laptop from "../Components/Home/Laptop";
 import Header from "../Components/Home/Header"
 import FeatureCards from "../Components/Home/FeatureCards"
 import ClientSection from "../Components/Home/ClientSection"
+import About from "../Components/Home/About";
+import AboutSection from "../Components/Home/AboutSection";
+import ServicesSection from "../Components/Home/ServicesSection";
+import ProjectsSection from "../Components/Home/ProjectsSection";
+
 
 
 const Home = () => {
@@ -25,6 +30,22 @@ const Home = () => {
         <FeatureCards />
         <ClientSection />
       </div>
+      <div className="bg-gradient-to-br from-gray-50 to-gray-100">
+        <About />
+        <AboutSection />
+        
+      </div>
+
+      <div>
+        <ServicesSection />
+      </div>
+
+      <div>
+        <ProjectsSection />
+        
+      </div>
+      
+
 
     </div>
   );
