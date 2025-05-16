@@ -15,7 +15,7 @@ export default function Hero() {
                     <div className='max-w-4xl mx-auto text-center'>
                         <div className={`transform transition-all duration-700 ${isVisible ? 'opacity-100' : 'opacity-0 translate-y-10'}`}>
                             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2A2D43] via-[#AA7A26] to-[#12664F] animate-pulse-subtle">
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2A2D43] via-[#2BA6FF] to-[#12664F] animate-pulse-subtle">
                                     Exploring the Future of Technology
                                 </span>
                             </h1>
