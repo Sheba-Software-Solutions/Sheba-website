@@ -6,12 +6,13 @@ import { motion } from 'framer-motion';
 
 function App() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
       <motion.main
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.2, ease: 'easeOut' }}
+        className="flex-grow"
       >
         <Career />
         <Projects />

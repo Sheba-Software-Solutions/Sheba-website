@@ -3,9 +3,16 @@
 @tailwind utilities;
 
 body {
-  @apply bg-selamWhite text-selamSlate;
+  @apply bg-white text-[#1F2937];
+  font-family: 'Inter', sans-serif;
 }
 
 .glass {
-  @apply bg-white bg-opacity-20 backdrop-blur-xs border border-selamTeal border-opacity-30 shadow-glass;
+  @apply bg-white bg-opacity-80 backdrop-blur-sm border border-[#E5E7EB] shadow-sm;
+}
+
+@layer utilities {
+  .transform {
+    transform: var(--tw-transform);
+  }
 }

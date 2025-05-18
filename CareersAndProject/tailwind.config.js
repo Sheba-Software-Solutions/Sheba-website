@@ -1,11 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
-      fontFamily: {
-        inter: ["Inter", "sans-serif"],
-      },
       colors: {
         selamBlue: '#2BA6FF',
         selamGold: '#AA7A26',
@@ -16,11 +13,8 @@ export default {
         selamOffWhite: '#F1F5F9',
       },
       boxShadow: {
-        'glass': '0 8px 32px rgba(0, 0, 0, 0.1)',
-      },
-      backdropBlur: {
-        xs: '4px',
-      },
+        glass: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+      }
     },
   },
   plugins: [],
