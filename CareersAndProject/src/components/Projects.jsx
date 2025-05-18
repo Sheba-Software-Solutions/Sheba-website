@@ -224,7 +224,6 @@ const Projects = () => {
             }}
             className="mb-6"
           >
-            <FaRocket className="w-16 h-16 mx-auto text-[#2BA6FF]" aria-hidden="true" />
           </motion.div>
           <h2 className="text-4xl font-bold mb-6 font-[Poppins] text-[#1F2937]">Let's Build Something Amazing Together</h2>
           <motion.button
