@@ -3,6 +3,7 @@ import SnowEffect from "../Components/Home/SnowEffect";
 // import HeroSection from "../Components/Home/HeroSection";
 import NavBar from "../Components/Shared/NavBar";
 import About from "../Components/About/About";
+import Services from "../Components/Services/Services";
 import Contact from "../Components/Contact/Contact";
 import Footer from "../Components/Shared/Footer";
 
@@ -17,6 +18,7 @@ const Home = () => {
           <HeroSection />
           
           <About />
+          <Services />
           <Contact />
         </div>
       </div>
