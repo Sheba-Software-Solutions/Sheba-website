@@ -64,7 +64,7 @@ const SnowEffect = () => {
     };
   }, []);
 
-  return <div ref={mountRef} className="absolute inset-0 z-0" />;
+  return <div ref={mountRef} className="absolute inset-0 z-0 pointer-events-none" />;
 };
 
 export default SnowEffect;

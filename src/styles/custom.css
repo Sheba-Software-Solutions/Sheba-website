@@ -1,3 +1,8 @@
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
 .nav-link {
   position: relative;
 }
@@ -50,6 +55,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
   .contact-card,
   .icon-animate,
   .team-button,

@@ -42,7 +42,7 @@ const NavBar = () => {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
             </a>
             <a
-              href="#"
+              href="#about"
               className="hover:text-gray-700 transition-colors duration-200 relative group"
             >
               About Us
@@ -77,7 +77,7 @@ const NavBar = () => {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
             </a>
             <a
-              href="#"
+              href="#contact"
               className="hover:text-gray-700 transition-colors duration-200 relative group"
             >
               Contact Us
@@ -129,7 +129,7 @@ const NavBar = () => {
                 Home
               </a>
               <a
-                href="#"
+                href="#about"
                 className="hover:text-gray-700 transition-colors duration-200"
                 onClick={toggleMenu}
               >
@@ -164,7 +164,7 @@ const NavBar = () => {
                 Careers
               </a>
               <a
-                href="#"
+                href="#contact"
                 className="hover:text-gray-700 transition-colors duration-200"
                 onClick={toggleMenu}
               >
