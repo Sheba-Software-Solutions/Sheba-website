@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router';
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,7 +13,7 @@ const NavBar = () => {
       <nav className="p-6 bg-white/10 backdrop-blur-md border-b border-gray-200/20 rounded-b-2xl">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
+          <Link to="/" className="flex items-center space-x-3">
             <svg
               className="w-8 h-8 text-amber-900 transition-transform hover:scale-110"
               fill="none"
@@ -30,17 +31,17 @@ const NavBar = () => {
             <span className="text-amber-900 text-xl font-medium tracking-tight">
               Sheba Software
             </span>
-          </div>
+          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden lg:flex space-x-8 text-gray-900 font-semibold">
-            <a
-              href="#"
+            <Link
+              to="/"
               className="hover:text-gray-700 transition-colors duration-200 relative group"
             >
               Home
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
-            </a>
+            </Link>
             <a
               href="#about"
               className="hover:text-gray-700 transition-colors duration-200 relative group"
@@ -62,13 +63,13 @@ const NavBar = () => {
               Projects
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
             </a>
-            <a
-              href="#"
+            <Link
+              to="/blog"
               className="hover:text-gray-700 transition-colors duration-200 relative group"
             >
               Blog
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 transition-all duration-300 group-hover:w-full"></span>
-            </a>
+            </Link>
             <a
               href="#"
               className="hover:text-gray-700 transition-colors duration-200 relative group"
@@ -121,13 +122,13 @@ const NavBar = () => {
         {isOpen && (
           <div className="lg:hidden mt-4 bg-white/95 backdrop-blur-sm rounded-lg p-4 mx-4 sm:mx-6 md:mx-8">
             <div className="flex flex-col space-y-4 text-gray-900 font-semibold">
-              <a
-                href="#"
+              <Link
+                to="/"
                 className="hover:text-gray-700 transition-colors duration-200"
                 onClick={toggleMenu}
               >
                 Home
-              </a>
+              </Link>
               <a
                 href="#about"
                 className="hover:text-gray-700 transition-colors duration-200"
@@ -149,13 +150,13 @@ const NavBar = () => {
               >
                 Projects
               </a>
-              <a
-                href="#"
+              <Link
+                to="/blog"
                 className="hover:text-gray-700 transition-colors duration-200"
                 onClick={toggleMenu}
               >
                 Blog
-              </a>
+              </Link>
               <a
                 href="#"
                 className="hover:text-gray-700 transition-colors duration-200"

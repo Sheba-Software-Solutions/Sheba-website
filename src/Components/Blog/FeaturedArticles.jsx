@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Calendar, Clock, ArrowRight } from 'lucide-react';
+import { Calendar, Clock, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router';
 
 const CATEGORIES = ['All', 'AI', 'Web Dev', 'Cloud', 'Blockchain', 'IoT'];
@@ -57,26 +57,114 @@ const ARTICLES = [
     date: "May 2, 2025",
     readTime: "9 min read",
     image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee"
+  },
+  {
+    id: 7,
+    title: "Advanced TypeScript Patterns for Enterprise Applications",
+    excerpt: "Master advanced TypeScript techniques to build more robust and maintainable enterprise-level applications.",
+    category: "Web Dev",
+    date: "April 30, 2025",
+    readTime: "12 min read",
+    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3"
+  },
+  {
+    id: 8,
+    title: "Machine Learning Operations: Best Practices for 2025",
+    excerpt: "Learn how to successfully deploy and maintain machine learning models in production environments.",
+    category: "AI",
+    date: "April 28, 2025",
+    readTime: "8 min read",
+    image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c"
+  },
+  {
+    id: 9,
+    title: "Kubernetes Security: Protecting Your Cluster",
+    excerpt: "Essential security practices to protect your Kubernetes clusters from common vulnerabilities and threats.",
+    category: "Cloud",
+    date: "April 26, 2025",
+    readTime: "10 min read",
+    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31"
   }
 ];
-export default function FeaturedArticles() {
 
+const ARTICLES_PER_PAGE = 6;
+
+export default function FeaturedArticles() {
   const [activeCategory, setActiveCategory] = useState("All")
-  const [visible, setVisisble] = useState(true)
+  const [visible, setVisible] = useState(true)
+  const [currentPage, setCurrentPage] = useState(1)
+  
   const filteredArticles = activeCategory === "All" ? ARTICLES : ARTICLES.filter(article => article.category === activeCategory)
+  const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE)
+  
+  // Calculate articles for current page
+  const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE
+  const endIndex = startIndex + ARTICLES_PER_PAGE
+  const currentArticles = filteredArticles.slice(startIndex, endIndex)
 
   const handleCategoryChange = (category) => {
-    setVisisble(false);
+    setVisible(false);
     setTimeout(() => {
       setActiveCategory(category);
-      setVisisble(true);
+      setCurrentPage(1); // Reset to first page when category changes
+      setVisible(true);
     }, 100);
   }
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setVisible(false);
+      setTimeout(() => {
+        setCurrentPage(page);
+        setVisible(true);
+        // Scroll to top of articles section
+        document.getElementById('articles-section')?.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 100);
+    }
+  }
+
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+        pages.push('...');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
+      }
+    }
+    return pages;
+  }
+
   return (
     <>
-      <div className="bg-gray-50 py-16">
+      <div className="bg-gray-50 py-16" id="articles-section">
         <div className="container mx-auto px-4">
-          <h2 className='text-3xl md:text-4xl font-bold mb-2 text-[#2a2d43]'>Featured Articles</h2>
+          <h2 className='text-3xl md:text-4xl font-bold mb-2 text-gray-900'>Featured Articles</h2>
           <p className="text-gray-600 mb-8">Discover our most popular and trending tech content</p>
 
           {/* Category Pills */}
@@ -93,14 +181,14 @@ export default function FeaturedArticles() {
           </div>
 
           {/* Article Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-300">
-            {filteredArticles.map((article) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-300 min-h-[600px]">
+            {currentArticles.map((article, index) => (
               <div
                 key={article.id}
                 className={`bg-white rounded-lg overflow-hidden hover-card-animation shadow-sm
                 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} 
                 transition-all duration-500`}
-                style={{ transitionDelay: `${(article.id % 3) * 100}ms` }}
+                style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div className="h-48 overflow-hidden">
                   <img
@@ -118,7 +206,7 @@ export default function FeaturedArticles() {
                     </div>
                   </div>
                   <Link to={`/article/${article.id}`}>
-                    <h3 className="text-xl font-bold mb-2 text-[#2a2d43] hover:text-[#2ba6ff] transition-colors cursor-pointer">
+                    <h3 className="text-xl font-bold mb-2 text-gray-900 hover:text-blue-600 transition-colors cursor-pointer">
                       {article.title}
                     </h3>
                   </Link>
@@ -128,15 +216,76 @@ export default function FeaturedArticles() {
                       <Calendar size={14} className="mr-1" />
                       <span>{article.date}</span>
                     </div>
-                    <Link to={`/article/${article.id}`} className="text-[#2ba6ff] hover:text-[#aa7a26] flex items-center text-sm font-medium transition-colors">
+                    <Link to={`/article/${article.id}`} className="text-blue-600 hover:text-gray-600 flex items-center text-sm font-medium transition-colors">
                       Read More <ArrowRight size={14} className="ml-1" />
                     </Link>
                   </div>
                 </div>
               </div>
             ))}
-
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center mt-12 space-x-2">
+              {/* Previous Button */}
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`flex items-center px-3 py-2 rounded-lg transition-colors ${
+                  currentPage === 1
+                    ? 'text-gray-400 cursor-not-allowed'
+                    : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                }`}
+              >
+                <ChevronLeft size={20} className="mr-1" />
+                Previous
+              </button>
+
+              {/* Page Numbers */}
+              <div className="flex space-x-1">
+                {getPageNumbers().map((page, index) => (
+                  <React.Fragment key={index}>
+                    {page === '...' ? (
+                      <span className="px-3 py-2 text-gray-400">...</span>
+                    ) : (
+                      <button
+                        onClick={() => handlePageChange(page)}
+                        className={`px-3 py-2 rounded-lg transition-colors ${
+                          currentPage === page
+                            ? 'bg-blue-600 text-white'
+                            : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`flex items-center px-3 py-2 rounded-lg transition-colors ${
+                  currentPage === totalPages
+                    ? 'text-gray-400 cursor-not-allowed'
+                    : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                }`}
+              >
+                Next
+                <ChevronRight size={20} className="ml-1" />
+              </button>
+            </div>
+          )}
+
+          {/* Page Info */}
+          {totalPages > 1 && (
+            <div className="text-center mt-4 text-sm text-gray-500">
+              Showing {startIndex + 1}-{Math.min(endIndex, filteredArticles.length)} of {filteredArticles.length} articles
+            </div>
+          )}
         </div>
       </div>
     </>

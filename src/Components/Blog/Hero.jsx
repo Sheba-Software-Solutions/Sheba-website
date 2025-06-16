@@ -15,7 +15,7 @@ export default function Hero() {
                     <div className='max-w-4xl mx-auto text-center'>
                         <div className={`transform transition-all duration-700 ${isVisible ? 'opacity-100' : 'opacity-0 translate-y-10'}`}>
                             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2A2D43] via-[#2BA6FF] to-[#12664F] animate-pulse-subtle">
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-blue-600 to-gray-800 animate-pulse-subtle">
                                     Exploring the Future of Technology
                                 </span>
                             </h1>
@@ -24,11 +24,11 @@ export default function Hero() {
                                 Dive into the latest tech trends, innovations, and insights from industry experts.
                             </p>
                             <div className="flex flex-col sm:flex-row justify-center gap-4">
-                                <Button className="tech-button flex items-center gap-2 bg-[#2BA6FF] hover:bg-opacity-80 text-white">
+                                <Button className="tech-button flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white">
                                     Latest Articles
                                     <ArrowRight size={16} />
                                 </Button>
-                                <Button variant="outline" className="border-[#AA7A26] text-[#AA7A26] hover:bg-[#AA7A26]/10 font-medium">
+                                <Button variant="outline" className="border-gray-600 text-gray-600 hover:bg-gray-50 font-medium">
                                     Subscribe to Newsletter
                                 </Button>
                             </div>

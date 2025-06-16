@@ -3,7 +3,7 @@
 
 html, body {
   overflow-x: hidden;
-  color: #2a2d43;
+  color: #1f2937;
   font-family: 'Inter',sans-serif;
 
 }
@@ -38,7 +38,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .category-tab.active {
-  background-color: #2ba6ff; 
+  background-color: #2563eb; 
   color: #ffffff; 
 }
 .hover-card-animation {
@@ -51,7 +51,7 @@ h1, h2, h3, h4, h5, h6 {
               0 4px 6px -2px rgba(0, 0, 0, 0.05); 
 }
 .tag{
-  background-color: #12664f;
+  background-color: #374151;
   color: white;
   padding-bottom:4px;
   padding-top: 4px;
