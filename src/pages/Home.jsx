@@ -1,7 +1,7 @@
 import HeroSection from "../Components/Home/HeroSection";
 import SnowEffect from "../Components/Home/SnowEffect";
 import NavBar from "../Components/Shared/NavBar";
-
+import About from "../Components/About/About";
 
 const Home = () => {
   return (
@@ -9,7 +9,8 @@ const Home = () => {
       <div className="m-8 flex-1 bg-gradient-to-b from-blue-100 to-blue-200 flex flex-col relative">
         <SnowEffect />
         <NavBar />
-        <HeroSection />
+        {/* <HeroSection /> */}
+        <About />
 
         
       </div>

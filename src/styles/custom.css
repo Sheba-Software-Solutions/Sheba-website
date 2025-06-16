@@ -1,0 +1,60 @@
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: #3b82f6;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.contact-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.icon-animate {
+  transition: transform 0.3s ease;
+}
+
+.contact-card:hover .icon-animate {
+  transform: rotate(15deg);
+}
+
+.team-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.arrow-animate {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.team-button:hover .arrow-animate {
+  transform: translateX(5px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-card,
+  .icon-animate,
+  .team-button,
+  .arrow-animate {
+    transition: none;
+    transform: none;
+  }
+}
