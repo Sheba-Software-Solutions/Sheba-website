@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Smile } from 'lucide-react';
+import { Smile, Rocket, Users, ArrowRight, Sparkles, Star } from 'lucide-react';
 import FeatureCard from './FeatureCard';
 
 const FeatureCards = () => {
@@ -11,11 +11,9 @@ const FeatureCards = () => {
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          // Optionally stop observing after animation triggers
-          // observer.unobserve(entry.target);
         }
       },
-      { threshold: 0.2 } // Trigger when 20% of the section is visible
+      { threshold: 0.2 }
     );
 
     if (sectionRef.current) observer.observe(sectionRef.current);
@@ -25,123 +23,160 @@ const FeatureCards = () => {
     };
   }, []);
 
+  const cards = [
+    {
+      bgColor: 'bg-gradient-to-br from-gray-900 via-gray-800 to-black',
+      title: (
+        <div className="flex flex-col space-y-2">
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles className={`w-8 h-8 text-blue-400 ${isVisible ? 'animate-pulse' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }} />
+            <span className={`text-sm text-blue-400 font-medium ${isVisible ? 'animate-fadeInRight' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
+              Our Portfolio
+            </span>
+          </div>
+          <span className={`text-3xl font-bold text-white ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.4s' }}>
+            Discover Our
+          </span>
+          <span className={`text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.6s' }}>
+            Exceptional Work
+          </span>
+        </div>
+      ),
+      description: 'Explore our award-winning projects and innovative solutions that transform businesses across Ethiopia and beyond.',
+      buttonText: 'View Our Portfolio',
+      link: '/projects',
+      stats: '50+ Projects Delivered'
+    },
+    {
+      bgColor: 'bg-gradient-to-br from-blue-50 via-white to-purple-50',
+      title: (
+        <div className="flex justify-between items-start">
+          <div className="flex flex-col space-y-2">
+            <div className="flex items-center gap-2 mb-4">
+              <Users className={`w-8 h-8 text-blue-600 ${isVisible ? 'animate-bounce' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }} />
+              <span className={`text-sm text-blue-600 font-medium ${isVisible ? 'animate-fadeInRight' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
+                Career Opportunities
+              </span>
+            </div>
+            <span className={`text-3xl font-bold text-gray-900 ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.4s' }}>
+              Join Our
+            </span>
+            <span className={`text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.6s' }}>
+              Elite Team
+            </span>
+          </div>
+          <div className="text-blue-600 relative">
+            <div className={`flex space-x-1 ${isVisible ? 'animate-twinkle' : 'opacity-0'}`} style={{ animationDelay: '0.8s' }}>
+              <Star className="w-6 h-6 fill-current" />
+              <Star className="w-6 h-6 fill-current" />
+              <Star className="w-6 h-6 fill-current" />
+            </div>
+            <Smile
+              size={40}
+              className={`mt-3 text-yellow-500 ${isVisible ? 'animate-spinIn' : 'opacity-0'}`}
+              style={{ animationDelay: '1s' }}
+            />
+          </div>
+        </div>
+      ),
+      description: 'Shape the future of Ethiopian tech industry with passionate innovators and cutting-edge projects.',
+      buttonText: 'Explore Careers',
+      buttonVariant: 'secondary',
+      link: '/careers',
+      stats: '15+ Open Positions'
+    },
+    {
+      bgColor: 'bg-gradient-to-br from-gray-900 via-blue-900 to-black',
+      title: (
+        <div className="flex justify-between items-start relative">
+          <div className="flex flex-col space-y-2">
+            <div className="flex items-center gap-2 mb-4">
+              <Rocket className={`w-8 h-8 text-green-400 ${isVisible ? 'animate-rocket' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }} />
+              <span className={`text-sm text-green-400 font-medium ${isVisible ? 'animate-fadeInRight' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
+                Let's Build Together
+              </span>
+            </div>
+            <span className={`text-3xl font-bold text-white ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.4s' }}>
+              Have a
+            </span>
+            <span className={`text-3xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.6s' }}>
+              Vision?
+            </span>
+            <span className={`text-2xl font-bold text-white ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.8s' }}>
+              Let's Make It Reality
+            </span>
+          </div>
+          <div className="relative">
+            <div
+              className={`absolute -top-8 -right-4 w-16 h-16 bg-gradient-to-br from-green-400 to-blue-400 rounded-full ${isVisible ? 'animate-orbit' : 'opacity-0'}`}
+              style={{ animationDelay: '1s' }}
+            ></div>
+            <div
+              className={`absolute -top-4 right-2 w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full ${isVisible ? 'animate-orbit-reverse' : 'opacity-0'}`}
+              style={{ animationDelay: '1.2s' }}
+            ></div>
+          </div>
+        </div>
+      ),
+      description: 'Transform your ideas into powerful digital solutions that drive growth and innovation.',
+      buttonText: 'Start Your Project',
+      link: '#contact',
+      stats: '24/7 Support Available'
+    }
+  ];
+
   return (
     <div
       ref={sectionRef}
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16"
     >
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-        {[
-          {
-            bgColor: 'bg-black',
-            title: (
-              <div className="flex flex-col">
-                <span className={`text-3xl font-bold text-white ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
-                  Discover our
-                </span>
-                <span className={`text-3xl font-bold text-blue-200 ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.4s' }}>
-                  Work
-                </span>
-              </div>
-            ),
-            description: 'These are our crafts',
-            buttonText: 'Our Portfolio',
-          },
-          {
-            bgColor: 'bg-gradient-to-b from-blue-100 to-blue-200',
-            title: (
-              <div className="flex justify-between items-start">
-                <span className={`text-3xl font-bold text-black ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
-                  Join us
-                </span>
-                <div className="text-black relative">
-                  <span
-                    className={`absolute -top-2 right-8 text-2xl ${isVisible ? 'animate-wiggle' : 'opacity-0'}`}
-                    style={{ animationDelay: '0.6s' }}
-                  >
-                    ✕
-                  </span>
-                  <span
-                    className={`absolute -top-2 right-3 text-2xl ${isVisible ? 'animate-wiggle' : 'opacity-0'}`}
-                    style={{ animationDelay: '0.8s' }}
-                  >
-                    ✕
-                  </span>
-                  <Smile
-                    size={40}
-                    className={`mt-3 ${isVisible ? 'animate-spinIn' : 'opacity-0'}`}
-                    style={{ animationDelay: '1s' }}
-                  />
-                </div>
-              </div>
-            ),
-            description: 'The best place to work and grow',
-            buttonText: 'Check open positions',
-            buttonVariant: 'secondary',
-          },
-          {
-            bgColor: 'bg-black',
-            title: (
-              <div className="flex justify-between items-start">
-                <div className="flex flex-col">
-                  <span className={`text-3xl font-bold text-white ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
-                    Have a
-                  </span>
-                  <span className={`text-3xl font-bold text-blue-200 ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.4s' }}>
-                    project
-                  </span>
-                  <span className={`text-3xl font-bold text-white ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.6s' }}>
-                    in mind?
-                  </span>
-                </div>
-                <div className="relative">
-                  <div
-                    className={`absolute -top-6 right-0 w-14 h-14 bg-gradient-to-b from-blue-100 to-blue-200 rounded-full ${isVisible ? 'animate-pulseCircle' : 'opacity-0'}`}
-                    style={{ animationDelay: '0.8s' }}
-                  ></div>
-                </div>
-              </div>
-            ),
-            description: 'Reach out and let us sort it out',
-            buttonText: 'Request a meeting',
-          },
-        ].map((card, index) => (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        {cards.map((card, index) => (
           <div
             key={index}
-            className={`relative rounded-xl shadow-lg transition-all duration-500 hover:shadow-2xl hover:-rotate-1 hover:border-2 hover:border-blue-200/50 ${
+            className={`group relative rounded-2xl shadow-xl transition-all duration-700 hover:shadow-2xl hover:-translate-y-2 hover:rotate-1 ${
               isVisible ? 'animate-cardFadeIn' : 'opacity-0 translate-y-10'
-            } ${card.bgColor} overflow-hidden`}
+            } ${card.bgColor} overflow-hidden border border-white/10`}
             style={{ animationDelay: `${index * 0.2}s` }}
           >
-            {card.bgColor === 'bg-black' && (
-              <div className="absolute inset-0 bg-gradient-radial from-blue-200/10 to-transparent animate-pulseBg"></div>
-            )}
+            {/* Animated Background Effects */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            
+            {/* Enhanced FeatureCard */}
             <FeatureCard
               bgColor="bg-transparent"
               title={card.title}
               description={card.description}
               buttonText={card.buttonText}
               buttonVariant={card.buttonVariant}
+              link={card.link}
               className={`relative z-10 ${isVisible ? 'animate-buttonSlideIn' : 'opacity-0 translate-y-5'}`}
               style={{ animationDelay: `${index * 0.2 + 0.4}s` }}
             />
+            
+            {/* Stats Badge */}
+            <div className={`absolute top-4 right-4 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium text-white/90 ${isVisible ? 'animate-fadeIn' : 'opacity-0'}`} style={{ animationDelay: `${index * 0.2 + 0.6}s` }}>
+              {card.stats}
+            </div>
           </div>
         ))}
       </div>
+
       <style jsx>{`
         @keyframes cardFadeIn {
           from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(30px) scale(0.95);
           }
           to {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
           }
         }
         .animate-cardFadeIn {
-          animation: cardFadeIn 0.8s ease-out forwards;
+          animation: cardFadeIn 1s ease-out forwards;
         }
+        
         @keyframes typewriter {
           from {
             opacity: 0;
@@ -153,26 +188,41 @@ const FeatureCards = () => {
           }
         }
         .animate-typewriter {
-          animation: typewriter 0.5s ease-out forwards;
+          animation: typewriter 0.6s ease-out forwards;
         }
-        @keyframes wiggle {
+        
+        @keyframes fadeInRight {
+          from {
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        .animate-fadeInRight {
+          animation: fadeInRight 0.6s ease-out forwards;
+        }
+        
+        @keyframes twinkle {
           0%, 100% {
-            transform: rotate(0deg);
+            opacity: 1;
+            transform: scale(1);
           }
-          25% {
-            transform: rotate(15deg);
-          }
-          75% {
-            transform: rotate(-15deg);
+          50% {
+            opacity: 0.7;
+            transform: scale(1.1);
           }
         }
-        .animate-wiggle {
-          animation: wiggle 0.4s ease-in-out forwards;
+        .animate-twinkle {
+          animation: twinkle 2s ease-in-out infinite;
         }
+        
         @keyframes spinIn {
           from {
             opacity: 0;
-            transform: rotate(180deg) scale(0.5);
+            transform: rotate(-180deg) scale(0.5);
           }
           to {
             opacity: 1;
@@ -180,32 +230,48 @@ const FeatureCards = () => {
           }
         }
         .animate-spinIn {
-          animation: spinIn 0.6s ease-out forwards;
+          animation: spinIn 0.8s ease-out forwards;
         }
-        @keyframes pulseCircle {
+        
+        @keyframes rocket {
           0%, 100% {
-            transform: scale(1);
-            opacity: 0.8;
+            transform: translateY(0) rotate(0deg);
           }
-          50% {
-            transform: scale(1.2);
-            opacity: 1;
+          25% {
+            transform: translateY(-5px) rotate(-5deg);
           }
-        }
-        .animate-pulseCircle {
-          animation: pulseCircle 2s ease-in-out infinite;
-        }
-        @keyframes pulseBg {
-          0%, 100% {
-            opacity: 0.5;
-          }
-          50% {
-            opacity: 0.8;
+          75% {
+            transform: translateY(-3px) rotate(5deg);
           }
         }
-        .animate-pulseBg {
-          animation: pulseBg 4s ease-in-out infinite;
+        .animate-rocket {
+          animation: rocket 2s ease-in-out infinite;
         }
+        
+        @keyframes orbit {
+          from {
+            transform: rotate(0deg) translateX(20px) rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg) translateX(20px) rotate(-360deg);
+          }
+        }
+        .animate-orbit {
+          animation: orbit 4s linear infinite;
+        }
+        
+        @keyframes orbit-reverse {
+          from {
+            transform: rotate(360deg) translateX(15px) rotate(-360deg);
+          }
+          to {
+            transform: rotate(0deg) translateX(15px) rotate(0deg);
+          }
+        }
+        .animate-orbit-reverse {
+          animation: orbit-reverse 3s linear infinite;
+        }
+        
         @keyframes buttonSlideIn {
           from {
             opacity: 0;
@@ -218,6 +284,18 @@ const FeatureCards = () => {
         }
         .animate-buttonSlideIn {
           animation: buttonSlideIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.6s ease-out forwards;
         }
       `}</style>
     </div>

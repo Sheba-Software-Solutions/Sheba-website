@@ -17,11 +17,12 @@ const Footer = ({ showNewsletter = false }) => {
 
   const quickLinks = [
     { name: 'Home', path: '/' },
-    { name: 'About us', path: '/#about' },
+    { name: 'About us', path: '/about' },
+    { name: 'Services', path: '/services' },
+    { name: 'Projects', path: '/projects' },
     { name: 'Blog', path: '/blog' },
-    { name: 'Contact us', path: '/#contact' },
-    { name: 'Pricing', path: '#' },
-    { name: 'FAQ', path: '#' }
+    { name: 'Careers', path: '/careers' },
+    { name: 'Contact us', path: '/contact' }
   ];
 
   const socialLinks = [

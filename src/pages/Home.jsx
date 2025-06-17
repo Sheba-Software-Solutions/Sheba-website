@@ -1,13 +1,10 @@
 import HeroSection from "../Components/Home/HeroSection";
 import SnowEffect from "../Components/Home/SnowEffect";
 import NavBar from "../Components/Shared/NavBar";
-import Laptop from "../Components/Home/Laptop";
 import Header from "../Components/Home/Header"
 import FeatureCards from "../Components/Home/FeatureCards"
-import ClientSection from "../Components/Home/ClientSection"
 import About from "../Components/Home/About";
 import AboutSection from "../Components/Home/AboutSection";
-import ServicesSection from "../Components/Home/ServicesSection";
 import Services from "../Components/Services/Services";
 import ProjectsSection from "../Components/Home/ProjectsSection";
 import Contact from "../Components/Contact/Contact";
@@ -24,16 +21,10 @@ const Home = () => {
           <HeroSection />
         </div>
         
-        {/* Second section: Laptop */}
-        <div className="m-8">
-          <Laptop />
-        </div>
-        
         {/* Header and Feature Cards */}
         <div className="bg-gradient-to-br from-gray-50 to-gray-100">
           <Header />
           <FeatureCards />
-          <ClientSection />
         </div>
         
         {/* About sections */}
@@ -42,9 +33,8 @@ const Home = () => {
           <AboutSection />
         </div>
 
-        {/* Services sections */}
+        {/* Services section - Only our professional Services component */}
         <div>
-          <ServicesSection />
           <Services />
         </div>
 
