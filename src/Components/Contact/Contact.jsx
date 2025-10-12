@@ -1,11 +1,36 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope, faPhoneAlt, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons'
+import { useState } from 'react'
+import { websiteApi } from '../../utils/api'
 
 function Contact() {
-  const handleSubmit = (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState(null) // 'success', 'error', null
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    alert('Thank you for your message! We will get back to you soon.')
-    e.target.reset()
+    setIsSubmitting(true)
+    setSubmitStatus(null)
+
+    const formData = new FormData(e.target)
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      message: formData.get('message'),
+      subject: 'Contact Form Submission',
+      status: 'new'
+    }
+
+    try {
+      await websiteApi.submitContactForm(data)
+      setSubmitStatus('success')
+      e.target.reset()
+    } catch (error) {
+      console.error('Failed to submit contact form:', error)
+      setSubmitStatus('error')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -109,12 +134,25 @@ function Contact() {
                     className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 resize-vertical relative z-10"
                   ></textarea>
                 </div>
+                {/* Status Messages */}
+                {submitStatus === 'success' && (
+                  <div className="p-4 bg-green-100 border border-green-400 rounded-md">
+                    <p className="text-green-800">Thank you for your message! We will get back to you soon.</p>
+                  </div>
+                )}
+                {submitStatus === 'error' && (
+                  <div className="p-4 bg-red-100 border border-red-400 rounded-md">
+                    <p className="text-red-800">Sorry, there was an error sending your message. Please try again.</p>
+                  </div>
+                )}
+
                 <div>
                   <button
                     type="submit"
-                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition relative z-10"
+                    disabled={isSubmitting}
+                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition relative z-10 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Send message
+                    {isSubmitting ? 'Sending...' : 'Send message'}
                   </button>
                 </div>
               </form>

@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
-import { Calendar, Clock, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react'
+import { Calendar, Clock, ArrowRight, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { Link } from 'react-router';
+import { websiteApi } from '../../utils/api';
 
 const CATEGORIES = ['All', 'AI', 'Web Dev', 'Cloud', 'Blockchain', 'IoT'];
 const ARTICLES = [
@@ -93,8 +94,51 @@ export default function FeaturedArticles() {
   const [activeCategory, setActiveCategory] = useState("All")
   const [visible, setVisible] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
+  const [articles, setArticles] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
   
-  const filteredArticles = activeCategory === "All" ? ARTICLES : ARTICLES.filter(article => article.category === activeCategory)
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        setIsLoading(true);
+        const response = await websiteApi.getBlogPosts({ 
+          status: 'published',
+          ordering: '-published_at'
+        });
+        const data = response?.data;
+        const fetchedArticles = Array.isArray(data) ? data : (data?.results || []);
+        
+        // Transform backend data to match frontend format
+        const transformedArticles = fetchedArticles.map(article => ({
+          id: article.id,
+          title: article.title,
+          excerpt: article.excerpt || article.content.substring(0, 150) + '...',
+          category: article.category || 'Technology',
+          date: new Date(article.published_at || article.created_at).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }),
+          readTime: Math.ceil(article.content.length / 500) + ' min read',
+          image: article.featured_image || "https://images.unsplash.com/photo-1677442136019-21780ecad995"
+        }));
+        
+        setArticles(transformedArticles);
+      } catch (err) {
+        console.error('Failed to fetch articles:', err);
+        setError('Failed to load articles');
+        // Fallback to default articles if API fails
+        setArticles(ARTICLES);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
+  const filteredArticles = activeCategory === "All" ? articles : articles.filter(article => article.category === activeCategory)
   const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE)
   
   // Calculate articles for current page
@@ -180,9 +224,24 @@ export default function FeaturedArticles() {
             ))}
           </div>
 
+          {/* Loading State */}
+          {isLoading && (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="text-4xl text-blue-600 animate-spin" />
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && !isLoading && (
+            <div className="text-center mb-8 p-4 bg-yellow-100 border border-yellow-400 rounded-lg">
+              <p className="text-yellow-800">{error}</p>
+            </div>
+          )}
+
           {/* Article Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-300 min-h-[600px]">
-            {currentArticles.map((article, index) => (
+          {!isLoading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-300 min-h-[600px]">
+              {currentArticles.map((article, index) => (
               <div
                 key={article.id}
                 className={`bg-white rounded-lg overflow-hidden hover-card-animation shadow-sm
@@ -222,11 +281,12 @@ export default function FeaturedArticles() {
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           {/* Pagination */}
-          {totalPages > 1 && (
+          {!isLoading && totalPages > 1 && (
             <div className="flex justify-center items-center mt-12 space-x-2">
               {/* Previous Button */}
               <button
@@ -281,7 +341,7 @@ export default function FeaturedArticles() {
           )}
 
           {/* Page Info */}
-          {totalPages > 1 && (
+          {!isLoading && totalPages > 1 && (
             <div className="text-center mt-4 text-sm text-gray-500">
               Showing {startIndex + 1}-{Math.min(endIndex, filteredArticles.length)} of {filteredArticles.length} articles
             </div>

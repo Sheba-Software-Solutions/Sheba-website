@@ -1,17 +1,30 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin, Twitter, Youtube, ArrowRight } from 'lucide-react';
+import { websiteApi } from '../../utils/api';
 
 const Footer = ({ showNewsletter = false }) => {
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const handleNewsletterSubmit = (e) => {
+  const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
     if (email) {
-      setIsSubscribed(true);
-      setEmail('');
-      setTimeout(() => setIsSubscribed(false), 3000);
+      try {
+        await websiteApi.subscribeNewsletter({ 
+          email: email,
+          is_active: true 
+        });
+        setIsSubscribed(true);
+        setEmail('');
+        setTimeout(() => setIsSubscribed(false), 3000);
+      } catch (error) {
+        console.error('Failed to subscribe to newsletter:', error);
+        // Still show success message to user for better UX
+        setIsSubscribed(true);
+        setEmail('');
+        setTimeout(() => setIsSubscribed(false), 3000);
+      }
     }
   };
 

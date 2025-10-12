@@ -11,18 +11,65 @@ import {
   Heart,
   TrendingUp,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Loader2
 } from 'lucide-react';
 import TestimonialsSection from './Testimonials';
+import { websiteApi } from '../../utils/api';
 
 const ProjectsSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [hoveredProject, setHoveredProject] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [projects, setProjects] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const sectionRef = useRef(null);
   
   const projectsPerPage = 3;
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setIsLoading(true);
+        const response = await websiteApi.getPortfolioProjects({ 
+          status: 'active',
+          ordering: 'order'
+        });
+        const data = response?.data;
+        const fetchedProjects = Array.isArray(data) ? data : (data?.results || []);
+        
+        // Transform backend data to match frontend format
+        const transformedProjects = fetchedProjects.map(project => ({
+          id: project.id,
+          title: project.title,
+          subtitle: project.category || "Project",
+          description: project.description,
+          image: project.image || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+          category: project.category || "Development",
+          categoryColor: "bg-blue-600",
+          technologies: project.technologies || [],
+          stats: { users: "1K+", transactions: "100+", uptime: "99%" },
+          gradient: "from-blue-500 to-blue-600",
+          year: new Date(project.created_at).getFullYear().toString(),
+          project_url: project.project_url,
+          github_url: project.github_url
+        }));
+        
+        setProjects(transformedProjects);
+      } catch (err) {
+        console.error('Failed to fetch projects:', err);
+        setError('Failed to load projects');
+        // Fallback to default projects if API fails
+        setProjects(allProjects);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   useEffect(() => {
     // Fallback mechanism - show content after a short delay if intersection observer fails
@@ -180,10 +227,10 @@ const ProjectsSection = () => {
   ];
 
   // Pagination logic
-  const totalPages = Math.ceil(allProjects.length / projectsPerPage);
+  const totalPages = Math.ceil(projects.length / projectsPerPage);
   const startIndex = (currentPage - 1) * projectsPerPage;
   const endIndex = startIndex + projectsPerPage;
-  const currentProjects = allProjects.slice(startIndex, endIndex);
+  const currentProjects = projects.slice(startIndex, endIndex);
 
   const goToPage = (page) => {
     setCurrentPage(page);
@@ -238,7 +285,7 @@ const ProjectsSection = () => {
             Showcase of our work delivering impactful solutions for clients across Ethiopia and beyond.
           </p>
           <div className="mt-6 text-sm text-gray-500">
-            Showing {startIndex + 1}-{Math.min(endIndex, allProjects.length)} of {allProjects.length} projects
+            Showing {startIndex + 1}-{Math.min(endIndex, projects.length)} of {projects.length} projects
           </div>
         </div>
 
@@ -258,9 +305,24 @@ const ProjectsSection = () => {
           ))}
         </div>
 
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="text-4xl text-blue-600 animate-spin" />
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !isLoading && (
+          <div className="text-center mb-8 p-4 bg-yellow-100 border border-yellow-400 rounded-lg">
+            <p className="text-yellow-800">{error}</p>
+          </div>
+        )}
+
         {/* Projects Grid */}
-        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 transform transition-all duration-1000 delay-400 ${getVisibilityClass()}`}>
-          {currentProjects.map((project, index) => (
+        {!isLoading && (
+          <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 transform transition-all duration-1000 delay-400 ${getVisibilityClass()}`}>
+            {currentProjects.map((project, index) => (
             <div
               key={project.id}
               className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 overflow-hidden relative"
@@ -334,17 +396,26 @@ const ProjectsSection = () => {
                 </div>
 
                 {/* CTA Button */}
-                <button className={`w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r ${project.gradient} text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover:scale-105 group-hover:shadow-xl`}>
-                  View Case Study
+                <button 
+                  className={`w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r ${project.gradient} text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 hover:scale-105 group-hover:shadow-xl`}
+                  onClick={() => {
+                    if (project.project_url) {
+                      window.open(project.project_url, '_blank');
+                    }
+                  }}
+                >
+                  {project.project_url ? 'View Project' : 'View Case Study'}
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
                 </button>
               </div>
             </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Pagination */}
-        <div className={`flex items-center justify-center gap-4 mb-20 transform transition-all duration-1000 delay-600 ${getVisibilityClass()}`}>
+        {!isLoading && totalPages > 1 && (
+          <div className={`flex items-center justify-center gap-4 mb-20 transform transition-all duration-1000 delay-600 ${getVisibilityClass()}`}>
           {/* Previous Button */}
           <button
             onClick={prevPage}
@@ -390,6 +461,7 @@ const ProjectsSection = () => {
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
+        )}
 
         {/* Call to Action */}
         <div className={`text-center mb-20 transform transition-all duration-1000 delay-800 ${getVisibilityClass()}`}>
