@@ -10,6 +10,7 @@ import ProjectsSection from "../Components/Home/ProjectsSection";
 import Contact from "../Components/Contact/Contact";
 import Footer from "../Components/Shared/Footer";
 
+
 const Home = () => {
   return (
     <>
@@ -42,6 +43,8 @@ const Home = () => {
         <div>
           <ProjectsSection />
         </div>
+
+
         
         {/* Contact section */}
         <div className="m-8 bg-gradient-to-b from-blue-100 to-blue-200 relative">

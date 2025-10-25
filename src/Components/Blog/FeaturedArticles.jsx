@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Calendar, Clock, ArrowRight, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { Link } from 'react-router';
 import { websiteApi } from '../../utils/api';
+import { imageHelpers } from '../../utils/imageHelpers';
+import SmartImage from '../ui/SmartImage';
 
 const CATEGORIES = ['All', 'AI', 'Web Dev', 'Cloud', 'Blockchain', 'IoT'];
 const ARTICLES = [
@@ -98,43 +100,84 @@ export default function FeaturedArticles() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
   
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        setIsLoading(true);
-        const response = await websiteApi.getBlogPosts({ 
-          status: 'published',
-          ordering: '-published_at'
-        });
-        const data = response?.data;
-        const fetchedArticles = Array.isArray(data) ? data : (data?.results || []);
-        
-        // Transform backend data to match frontend format
-        const transformedArticles = fetchedArticles.map(article => ({
-          id: article.id,
-          title: article.title,
-          excerpt: article.excerpt || article.content.substring(0, 150) + '...',
-          category: article.category || 'Technology',
-          date: new Date(article.published_at || article.created_at).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          }),
-          readTime: Math.ceil(article.content.length / 500) + ' min read',
-          image: article.featured_image || "https://images.unsplash.com/photo-1677442136019-21780ecad995"
-        }));
-        
-        setArticles(transformedArticles);
-      } catch (err) {
-        console.error('Failed to fetch articles:', err);
-        setError('Failed to load articles');
-        // Fallback to default articles if API fails
-        setArticles(ARTICLES);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const fetchArticles = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
 
+      
+      const response = await websiteApi.getBlogPosts({ 
+        status: 'published',
+        ordering: '-published_at'
+      });
+      
+
+      
+      const data = response?.data;
+      let fetchedArticles = [];
+      
+      if (data) {
+        if (Array.isArray(data)) {
+          fetchedArticles = data;
+        } else if (data.results && Array.isArray(data.results)) {
+          fetchedArticles = data.results;
+        } else {
+          console.warn('Unexpected API response format:', data);
+          fetchedArticles = [];
+        }
+      } else {
+        console.warn('No data in API response');
+        fetchedArticles = [];
+      }
+      
+      // Transform backend data to match frontend format
+      const transformedArticles = (fetchedArticles || []).map((article, index) => ({
+        id: article.id,
+        title: article.title || 'Untitled',
+        excerpt: article.excerpt || (article.content ? article.content.substring(0, 150) + '...' : 'No excerpt available'),
+        category: article.category || 'Technology',
+        date: new Date(article.published_at || article.created_at || Date.now()).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }),
+        readTime: Math.ceil((article.content || '').length / 500) + ' min read',
+        image: article.featured_image || imageHelpers.getBlogPlaceholder(article.title, article.category, index)
+      }));
+      
+      if (transformedArticles.length > 0) {
+        setArticles(transformedArticles);
+        setError(null);
+      } else {
+        // If no articles from API, use fallback data
+        console.warn('No articles from API, using fallback data');
+        setArticles(ARTICLES);
+        setError(null);
+      }
+    } catch (err) {
+      console.error('Failed to fetch articles:', err);
+      
+      let errorMessage = 'Network error';
+      if (err.response?.status === 404) {
+        errorMessage = 'Blog API endpoint not found';
+      } else if (err.response?.status >= 500) {
+        errorMessage = 'Server error';
+      } else if (err.message.includes('CORS')) {
+        errorMessage = 'CORS error - check backend configuration';
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(`Failed to load articles: ${errorMessage}`);
+      // Use fallback data when API fails
+      setArticles(ARTICLES.slice(0, 6));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchArticles();
   }, []);
 
@@ -233,13 +276,29 @@ export default function FeaturedArticles() {
 
           {/* Error State */}
           {error && !isLoading && (
-            <div className="text-center mb-8 p-4 bg-yellow-100 border border-yellow-400 rounded-lg">
-              <p className="text-yellow-800">{error}</p>
+            <div className="text-center py-20">
+              <div className="max-w-md mx-auto">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-8">
+                  <div className="text-red-600 mb-4">
+                    <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-red-800 mb-2">Unable to Load Articles</h3>
+                  <p className="text-red-700 mb-4">{error}</p>
+                  <button 
+                    onClick={fetchArticles}
+                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                  >
+                    Try Again
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
           {/* Article Grid */}
-          {!isLoading && (
+          {!isLoading && !error && articles.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-300 min-h-[600px]">
               {currentArticles.map((article, index) => (
               <div
@@ -250,9 +309,10 @@ export default function FeaturedArticles() {
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div className="h-48 overflow-hidden">
-                  <img
+                  <SmartImage
                     src={`${article.image}?auto=format&fit=crop&w=600&h=300`}
                     alt={article.title}
+                    fallback={imageHelpers.getBlogPlaceholder(article.title, article.category, index)}
                     className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                   />
                 </div>
@@ -286,7 +346,7 @@ export default function FeaturedArticles() {
           )}
 
           {/* Pagination */}
-          {!isLoading && totalPages > 1 && (
+          {!isLoading && !error && totalPages > 1 && (
             <div className="flex justify-center items-center mt-12 space-x-2">
               {/* Previous Button */}
               <button
@@ -341,7 +401,7 @@ export default function FeaturedArticles() {
           )}
 
           {/* Page Info */}
-          {!isLoading && totalPages > 1 && (
+          {!isLoading && !error && totalPages > 1 && (
             <div className="text-center mt-4 text-sm text-gray-500">
               Showing {startIndex + 1}-{Math.min(endIndex, filteredArticles.length)} of {filteredArticles.length} articles
             </div>

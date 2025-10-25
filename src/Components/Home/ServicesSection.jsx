@@ -19,31 +19,8 @@ const ServicesSection = () => {
         setServices(Array.isArray(data) ? data : (data?.results || []));
       } catch (err) {
         console.error('Failed to fetch services:', err);
-        setError('Failed to load services');
-        // Fallback to default services if API fails
-        setServices([
-          {
-            id: 1,
-            title: "Custom Software Development",
-            description: "Bespoke software solutions tailored to your business requirements, built with Ethiopian market considerations in mind.",
-            features: ["Web & Mobile Applications", "Enterprise Solutions", "Localized UX/UI Design"],
-            icon: "FaCode"
-          },
-          {
-            id: 2,
-            title: "Cloud Solutions",
-            description: "Secure and scalable cloud services optimized for Ethiopia's infrastructure and connectivity landscape.",
-            features: ["Cloud Migration", "Hybrid Cloud Solutions", "Local Data Compliance"],
-            icon: "FaCloud"
-          },
-          {
-            id: 3,
-            title: "AI & Data Analytics",
-            description: "Harness the power of artificial intelligence and data to gain insights relevant to the Ethiopian context.",
-            features: ["Predictive Analytics", "Machine Learning Models", "Local Language NLP"],
-            icon: "FaRobot"
-          }
-        ]);
+        setError(`Failed to load services: ${err.response?.data?.detail || err.message || 'Network error'}`);
+        setServices([]); // Don't fallback to static data
       } finally {
         setIsLoading(false);
       }

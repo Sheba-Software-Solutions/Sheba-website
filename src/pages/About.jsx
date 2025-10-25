@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import NavBar from '../Components/Shared/NavBar';
 import Footer from '../Components/Shared/Footer';
 import AboutSection from '../Components/Home/AboutSection';
@@ -10,10 +10,77 @@ import {
   Code,
   Globe,
   Lightbulb,
-  Shield
+  Shield,
+  Loader2
 } from 'lucide-react';
+import { websiteApi } from '../utils/api';
+import { imageHelpers } from '../utils/imageHelpers';
+import SmartImage from '../Components/ui/SmartImage';
 
 const About = () => {
+  const [team, setTeam] = useState([]);
+  const [isLoadingTeam, setIsLoadingTeam] = useState(true);
+  const [teamError, setTeamError] = useState(null);
+
+  useEffect(() => {
+    fetchTeamMembers();
+  }, []);
+
+  const fetchTeamMembers = async () => {
+    try {
+      setIsLoadingTeam(true);
+      const response = await websiteApi.getTeamMembers({ 
+        status: 'active',
+        ordering: 'order'
+      });
+      const data = response?.data;
+      const fetchedTeam = Array.isArray(data) ? data : (data?.results || []);
+      
+      // Transform backend data to match frontend format
+      const transformedTeam = fetchedTeam.map((member, index) => ({
+        name: member.name,
+        role: member.position || member.role,
+        image: member.image || imageHelpers.getTeamPlaceholder(member.name, member.role, index),
+        bio: member.bio || member.description || "Passionate team member dedicated to excellence."
+      }));
+      
+      setTeam(transformedTeam);
+    } catch (err) {
+      console.error('Failed to fetch team members:', err);
+      setTeamError(`Failed to load team members: ${err.response?.data?.detail || err.message || 'Network error'}`);
+      setTeam([]); // Don't fallback to static data
+    } finally {
+      setIsLoadingTeam(false);
+    }
+  };
+
+  const getDefaultTeam = () => [
+    {
+      name: "Abebe Tadesse",
+      role: "CEO & Founder",
+      image: imageHelpers.getTeamPlaceholder("Abebe Tadesse", "CEO & Founder", 0),
+      bio: "Visionary leader with 10+ years in software development and business strategy."
+    },
+    {
+      name: "Meron Haile",
+      role: "CTO",
+      image: imageHelpers.getTeamPlaceholder("Meron Haile", "CTO", 1),
+      bio: "Technical expert specializing in scalable architecture and emerging technologies."
+    },
+    {
+      name: "Daniel Bekele",
+      role: "Lead Developer",
+      image: imageHelpers.getTeamPlaceholder("Daniel Bekele", "Lead Developer", 2),
+      bio: "Full-stack developer passionate about creating elegant, efficient solutions."
+    },
+    {
+      name: "Sara Alemayehu",
+      role: "UI/UX Designer",
+      image: imageHelpers.getTeamPlaceholder("Sara Alemayehu", "UI/UX Designer", 3),
+      bio: "Creative designer focused on user-centered design and exceptional experiences."
+    }
+  ];
+
   const values = [
     {
       icon: Code,
@@ -37,32 +104,7 @@ const About = () => {
     }
   ];
 
-  const team = [
-    {
-      name: "Abebe Tadesse",
-      role: "CEO & Founder",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-      bio: "Visionary leader with 10+ years in software development and business strategy."
-    },
-    {
-      name: "Meron Haile",
-      role: "CTO",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-      bio: "Technical expert specializing in scalable architecture and emerging technologies."
-    },
-    {
-      name: "Daniel Bekele",
-      role: "Lead Developer",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-      bio: "Full-stack developer passionate about creating elegant, efficient solutions."
-    },
-    {
-      name: "Sara Alemayehu",
-      role: "UI/UX Designer",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-      bio: "Creative designer focused on user-centered design and exceptional experiences."
-    }
-  ];
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -138,27 +180,61 @@ const About = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {team.map((member, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden"
-              >
-                <div className="aspect-square overflow-hidden">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{member.name}</h3>
-                  <p className="text-blue-600 font-medium mb-3">{member.role}</p>
-                  <p className="text-gray-600 text-sm leading-relaxed">{member.bio}</p>
+          {/* Loading State */}
+          {isLoadingTeam && (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="text-4xl text-blue-600 animate-spin" />
+            </div>
+          )}
+
+          {/* Error State */}
+          {teamError && !isLoadingTeam && (
+            <div className="text-center py-20">
+              <div className="max-w-md mx-auto">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-8">
+                  <div className="text-red-600 mb-4">
+                    <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-red-800 mb-2">Unable to Load Team</h3>
+                  <p className="text-red-700 mb-4">{teamError}</p>
+                  <button 
+                    onClick={fetchTeamMembers}
+                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                  >
+                    Try Again
+                  </button>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          )}
+
+          {/* Team Grid */}
+          {!isLoadingTeam && !teamError && team.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {team.map((member, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden"
+                >
+                  <div className="aspect-square overflow-hidden">
+                    <SmartImage
+                      src={member.image}
+                      alt={member.name}
+                      fallback={imageHelpers.getTeamPlaceholder(member.name, member.role, index)}
+                      className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{member.name}</h3>
+                    <p className="text-blue-600 font-medium mb-3">{member.role}</p>
+                    <p className="text-gray-600 text-sm leading-relaxed">{member.bio}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

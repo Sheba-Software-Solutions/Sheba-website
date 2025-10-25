@@ -16,6 +16,8 @@ import {
 } from 'lucide-react';
 import TestimonialsSection from './Testimonials';
 import { websiteApi } from '../../utils/api';
+import { imageHelpers } from '../../utils/imageHelpers';
+import SmartImage from '../ui/SmartImage';
 
 const ProjectsSection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -29,45 +31,62 @@ const ProjectsSection = () => {
   
   const projectsPerPage = 3;
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        setIsLoading(true);
-        const response = await websiteApi.getPortfolioProjects({ 
-          status: 'active',
-          ordering: 'order'
-        });
-        const data = response?.data;
-        const fetchedProjects = Array.isArray(data) ? data : (data?.results || []);
-        
-        // Transform backend data to match frontend format
-        const transformedProjects = fetchedProjects.map(project => ({
-          id: project.id,
-          title: project.title,
-          subtitle: project.category || "Project",
-          description: project.description,
-          image: project.image || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-          category: project.category || "Development",
-          categoryColor: "bg-blue-600",
-          technologies: project.technologies || [],
-          stats: { users: "1K+", transactions: "100+", uptime: "99%" },
-          gradient: "from-blue-500 to-blue-600",
-          year: new Date(project.created_at).getFullYear().toString(),
-          project_url: project.project_url,
-          github_url: project.github_url
-        }));
-        
+  const fetchProjects = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // Fetch real projects created by admins (completed projects)
+      const response = await websiteApi.getProjects({ 
+        status: 'completed',
+        ordering: '-end_date'
+      });
+      const data = response?.data;
+      const fetchedProjects = Array.isArray(data) ? data : (data?.results || []);
+      
+      // Transform backend data to match frontend format
+      const transformedProjects = fetchedProjects.map((project, index) => ({
+        id: project.id,
+        title: project.name, // Projects use 'name' field
+        subtitle: project.client_company || project.client_name || "Client Project",
+        description: project.description,
+        image: imageHelpers.getProjectPlaceholder(project.name, "Development", index),
+        category: "Development", // Could be enhanced with project categories
+        categoryColor: "bg-blue-600",
+        technologies: project.technologies || [],
+        stats: { 
+          tasks: `${project.completed_tasks_count}/${project.tasks_count}`,
+          team: `${project.team_size} devs`,
+          progress: `${project.progress}%`
+        },
+        gradient: "from-blue-500 to-blue-600",
+        year: project.end_date ? new Date(project.end_date).getFullYear().toString() : new Date(project.created_at).getFullYear().toString(),
+        project_url: project.live_url,
+        github_url: project.repository_url,
+        client: project.client_name,
+        duration: project.duration_days ? `${project.duration_days} days` : null
+      }));
+      
+      if (transformedProjects.length > 0) {
         setProjects(transformedProjects);
-      } catch (err) {
-        console.error('Failed to fetch projects:', err);
-        setError('Failed to load projects');
-        // Fallback to default projects if API fails
-        setProjects(allProjects);
-      } finally {
-        setIsLoading(false);
+        setError(null);
+      } else {
+        // If no projects from API, use fallback data
+        console.warn('No projects from API, using fallback data');
+        setProjects(allProjects.slice(0, 6)); // Use first 6 fallback projects
+        setError(null);
       }
-    };
+    } catch (err) {
+      console.error('Failed to fetch projects:', err);
+      setError(`Failed to load projects: ${err.response?.data?.detail || err.message || 'Network error'}`);
+      // Use fallback data when API fails
+      setProjects(allProjects.slice(0, 6));
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProjects();
   }, []);
 
@@ -314,13 +333,29 @@ const ProjectsSection = () => {
 
         {/* Error State */}
         {error && !isLoading && (
-          <div className="text-center mb-8 p-4 bg-yellow-100 border border-yellow-400 rounded-lg">
-            <p className="text-yellow-800">{error}</p>
+          <div className="text-center py-20">
+            <div className="max-w-md mx-auto">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-8">
+                <div className="text-red-600 mb-4">
+                  <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-red-800 mb-2">Unable to Load Projects</h3>
+                <p className="text-red-700 mb-4">{error}</p>
+                <button 
+                  onClick={fetchProjects}
+                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  Try Again
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
         {/* Projects Grid */}
-        {!isLoading && (
+        {!isLoading && !error && projects.length > 0 && (
           <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 transform transition-all duration-1000 delay-400 ${getVisibilityClass()}`}>
             {currentProjects.map((project, index) => (
             <div
@@ -331,9 +366,10 @@ const ProjectsSection = () => {
             >
               {/* Project Image */}
               <div className="relative h-64 overflow-hidden">
-                <img
+                <SmartImage
                   src={project.image}
                   alt={`${project.title} project`}
+                  fallback={imageHelpers.getProjectPlaceholder(project.title, project.category, index)}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className={`absolute inset-0 bg-gradient-to-t ${project.gradient} opacity-20 group-hover:opacity-30 transition-opacity duration-300`}></div>
@@ -414,7 +450,7 @@ const ProjectsSection = () => {
         )}
 
         {/* Pagination */}
-        {!isLoading && totalPages > 1 && (
+        {!isLoading && !error && totalPages > 1 && (
           <div className={`flex items-center justify-center gap-4 mb-20 transform transition-all duration-1000 delay-600 ${getVisibilityClass()}`}>
           {/* Previous Button */}
           <button
@@ -464,7 +500,8 @@ const ProjectsSection = () => {
         )}
 
         {/* Call to Action */}
-        <div className={`text-center mb-20 transform transition-all duration-1000 delay-800 ${getVisibilityClass()}`}>
+        {!isLoading && !error && (
+          <div className={`text-center mb-20 transform transition-all duration-1000 delay-800 ${getVisibilityClass()}`}>
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8 text-white">
             <div className="flex items-center justify-center gap-2 mb-4">
               <Heart className="w-6 h-6 text-red-300" />
@@ -484,7 +521,8 @@ const ProjectsSection = () => {
               </button>
             </div>
           </div>
-        </div>
+          </div>
+        )}
 
         {/* Testimonials Section */}
         <TestimonialsSection />

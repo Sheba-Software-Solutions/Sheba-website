@@ -13,18 +13,107 @@ import {
   Users,
   TrendingUp,
   Cpu,
-  Database
+  Database,
+  Loader2
 } from 'lucide-react';
+import { websiteApi } from '../../utils/api';
+import { imageHelpers } from '../../utils/imageHelpers';
 
 const Services = () => {
   const [activeService, setActiveService] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [services, setServices] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     setIsVisible(true);
+    fetchServices();
   }, []);
 
-  const services = [
+  const fetchServices = async () => {
+    try {
+      setIsLoading(true);
+      const response = await websiteApi.getServices({ 
+        status: 'active',
+        ordering: 'order'
+      });
+      const data = response?.data;
+      const fetchedServices = Array.isArray(data) ? data : (data?.results || []);
+      
+      // Transform backend data to match frontend format
+      const transformedServices = fetchedServices.map((service, index) => ({
+        id: service.id,
+        icon: getIconForService(service.title, index),
+        title: service.title,
+        subtitle: service.description.substring(0, 50) + '...',
+        description: service.description,
+        features: service.features || [],
+        technologies: ["React", "Node.js", "Python", "AWS", "Docker"], // Default technologies
+        caseStudy: {
+          client: "Client Success",
+          result: "Improved efficiency",
+          description: "Successfully delivered project with excellent results."
+        },
+        gradient: getGradientForIndex(index),
+        bgColor: getBgColorForIndex(index),
+        iconColor: getIconColorForIndex(index)
+      }));
+      
+      setServices(transformedServices);
+    } catch (err) {
+      console.error('Failed to fetch services:', err);
+      setError(`Failed to load services: ${err.response?.data?.detail || err.message || 'Network error'}`);
+      setServices([]); // Don't fallback to static data
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getIconForService = (title, index) => {
+    const iconMap = {
+      'software': Code2,
+      'web': Globe,
+      'mobile': Smartphone,
+      'cloud': Cloud,
+      'security': Shield,
+      'consulting': Settings
+    };
+    
+    const titleLower = title.toLowerCase();
+    for (const [key, icon] of Object.entries(iconMap)) {
+      if (titleLower.includes(key)) return icon;
+    }
+    
+    // Default icons based on index
+    const defaultIcons = [Code2, Globe, Smartphone, Settings, Cloud, Shield];
+    return defaultIcons[index % defaultIcons.length];
+  };
+
+  const getGradientForIndex = (index) => {
+    const gradients = [
+      "from-blue-600 to-cyan-600",
+      "from-emerald-600 to-teal-600", 
+      "from-purple-600 to-pink-600",
+      "from-orange-600 to-red-600",
+      "from-indigo-600 to-blue-600",
+      "from-gray-700 to-gray-900"
+    ];
+    return gradients[index % gradients.length];
+  };
+
+  const getBgColorForIndex = (index) => {
+    const bgColors = ["bg-blue-50", "bg-emerald-50", "bg-purple-50", "bg-orange-50", "bg-indigo-50", "bg-gray-50"];
+    return bgColors[index % bgColors.length];
+  };
+
+  const getIconColorForIndex = (index) => {
+    const iconColors = ["text-blue-600", "text-emerald-600", "text-purple-600", "text-orange-600", "text-indigo-600", "text-gray-700"];
+    return iconColors[index % iconColors.length];
+  };
+
+  const getDefaultServices = () => [
+
     {
       id: 1,
       icon: Code2,
@@ -172,6 +261,29 @@ const Services = () => {
     { icon: Star, value: "4.9/5", label: "Client Rating" }
   ];
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div id="services" className="py-20 bg-gradient-to-br from-gray-50 via-white to-blue-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-6">
+              <Zap className="w-4 h-4" />
+              Our Expertise
+            </div>
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              Transforming Ideas Into
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> Digital Reality</span>
+            </h2>
+          </div>
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="text-4xl text-blue-600 animate-spin" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div id="services" className="py-20 bg-gradient-to-br from-gray-50 via-white to-blue-50">
       <div className="max-w-7xl mx-auto px-4">
@@ -191,6 +303,29 @@ const Services = () => {
           </p>
         </div>
 
+        {/* Error State */}
+        {error && !isLoading && (
+          <div className="text-center py-20">
+            <div className="max-w-md mx-auto">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-8">
+                <div className="text-red-600 mb-4">
+                  <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-red-800 mb-2">Unable to Load Services</h3>
+                <p className="text-red-700 mb-4">{error}</p>
+                <button 
+                  onClick={fetchServices}
+                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  Try Again
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Stats Section */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
           {stats.map((stat, index) => (
@@ -208,7 +343,8 @@ const Services = () => {
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mb-16">
+        {!error && !isLoading && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mb-16">
           {services.map((service, index) => {
             const IconComponent = service.icon;
             const isActive = activeService === index;
@@ -288,8 +424,10 @@ const Services = () => {
           })}
         </div>
 
+        )}
+
         {/* Detailed Service View */}
-        {activeService !== null && (
+        {!error && !isLoading && activeService !== null && services.length > 0 && (
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden mb-16 transform transition-all duration-500">
             <div className="grid grid-cols-1 lg:grid-cols-2">
               {/* Left Side - Details */}
@@ -365,24 +503,26 @@ const Services = () => {
         )}
 
         {/* CTA Section */}
-        <div className="text-center bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-white">
-          <div className="max-w-3xl mx-auto">
-            <h3 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to Transform Your Business?
-            </h3>
-            <p className="text-xl mb-8 text-blue-100">
-              Let's discuss how our expertise can drive your success. Get a free consultation today.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-200 hover:scale-105 shadow-lg">
-                Start Your Project
-              </button>
-              <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-200">
-                Schedule Consultation
-              </button>
+        {!error && !isLoading && (
+          <div className="text-center bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-white">
+            <div className="max-w-3xl mx-auto">
+              <h3 className="text-3xl md:text-4xl font-bold mb-6">
+                Ready to Transform Your Business?
+              </h3>
+              <p className="text-xl mb-8 text-blue-100">
+                Let's discuss how our expertise can drive your success. Get a free consultation today.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-200 hover:scale-105 shadow-lg">
+                  Start Your Project
+                </button>
+                <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-200">
+                  Schedule Consultation
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

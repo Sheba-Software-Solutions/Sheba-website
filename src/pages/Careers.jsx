@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { websiteApi } from '../utils/api';
 import NavBar from '../Components/Shared/NavBar';
 import Footer from '../Components/Shared/Footer';
 import { 
@@ -17,6 +18,50 @@ import {
 
 const Careers = () => {
   const [selectedDepartment, setSelectedDepartment] = useState('All');
+  const [jobs, setJobs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  const fetchJobs = async () => {
+    try {
+      setIsLoading(true);
+      const response = await websiteApi.getJobs();
+      const fetchedJobs = response?.data?.results || response?.data || [];
+      
+      // Transform backend data to match frontend format
+      const transformedJobs = fetchedJobs.map(job => ({
+        id: job.id,
+        title: job.title,
+        department: job.department.charAt(0).toUpperCase() + job.department.slice(1),
+        location: job.location || 'Remote',
+        type: job.job_type === 'full_time' ? 'Full-time' : 
+              job.job_type === 'part_time' ? 'Part-time' : 
+              job.job_type === 'contract' ? 'Contract' : 
+              job.job_type === 'internship' ? 'Internship' : 'Remote',
+        experience: job.experience_level === 'entry' ? '0-1 years' :
+                   job.experience_level === 'junior' ? '1-3 years' :
+                   job.experience_level === 'mid' ? '3-5 years' :
+                   job.experience_level === 'senior' ? '5+ years' : '8+ years',
+        description: job.description,
+        requirements: job.requirements || [],
+        salary: job.salary_range || 'Competitive'
+      }));
+      
+      setJobs(transformedJobs);
+      setError(null);
+    } catch (err) {
+      console.error('Failed to fetch jobs:', err);
+      setError('Failed to load job postings');
+      // Use fallback static jobs if API fails
+      setJobs(staticJobs);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const departments = ['All', 'Engineering', 'Design', 'Marketing', 'Sales'];
 
@@ -43,7 +88,7 @@ const Careers = () => {
     }
   ];
 
-  const jobs = [
+  const staticJobs = [
     {
       id: 1,
       title: "Senior Full Stack Developer",
@@ -93,6 +138,17 @@ const Careers = () => {
   const filteredJobs = selectedDepartment === 'All' 
     ? jobs 
     : jobs.filter(job => job.department === selectedDepartment);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading career opportunities...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
