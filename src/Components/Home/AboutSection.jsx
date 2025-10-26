@@ -52,9 +52,9 @@ const AboutSection = () => {
   ];
 
   const stats = [
-    { icon: Users, value: '50+', label: 'Expert Developers' },
-    { icon: Globe, value: '100+', label: 'Global Projects' },
-    { icon: Award, value: '5+', label: 'Years Experience' }
+    { icon: Users, value: '15+', label: 'Expert Developers' },
+    { icon: Globe, value: '20++', label: 'Global Projects' },
+    { icon: Award, value: '2+', label: 'Years Experience' }
   ];
 
   // Determine visibility state with fallback
@@ -80,7 +80,7 @@ const AboutSection = () => {
         {/* Header Section */}
         <div className={`text-center mb-16 transform transition-all duration-1000 ${getVisibilityClass('main')}`}>
           <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            Founded in <span className="font-semibold text-blue-600">Addis Ababa</span>, we are Ethiopia's premier software development company committed to driving digital transformation across industries.
+            Founded in <span className="font-semibold text-blue-600">Heart of Ethiopia</span>, we are Ethiopia's premier software development company committed to driving digital transformation across industries.
           </p>
         </div>
 
@@ -191,16 +191,16 @@ const AboutSection = () => {
 
               {/* Quote Section */}
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-8 rounded-2xl border-l-4 border-blue-600 shadow-lg">
-                <p className="text-gray-700 italic text-lg leading-relaxed mb-4">
+                {/* <p className="text-gray-700 italic text-lg leading-relaxed mb-4">
                   "At Sheba Software Solutions, we believe technology should reflect the unique needs and aspirations of the Ethiopian people while connecting us to the global digital economy."
-                </p>
+                </p> */}
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">CEO</span>
+                    <span className="text-white font-bold text-sm">Us</span>
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900">CEO, Sheba Software Solutions</p>
-                    <p className="text-gray-600 text-sm">Founder & Visionary</p>
+                    <p className="font-semibold text-gray-900">Ethiopian Heritage</p>
+                    {/* <p className="text-gray-600 text-sm">Founder & Visionary</p> */}
                   </div>
                 </div>
               </div>
@@ -210,10 +210,10 @@ const AboutSection = () => {
 
         {/* Call to Action */}
         <div className={`text-center mt-16 transform transition-all duration-1000 delay-800 ${getVisibilityClass('main')}`}>
-          <button className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl">
+          {/* <button className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl">
             Learn More About Us
             <ArrowRight className="w-5 h-5" />
-          </button>
+          </button> */}
         </div>
       </div>
 

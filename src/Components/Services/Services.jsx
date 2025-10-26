@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Code2, 
-  Globe, 
-  Smartphone, 
-  Settings, 
-  Cloud, 
-  Shield, 
-  Zap, 
-  ArrowRight, 
-  CheckCircle, 
+import {
+  Code2,
+  Globe,
+  Smartphone,
+  Settings,
+  Cloud,
+  Shield,
+  Zap,
+  ArrowRight,
+  CheckCircle,
   Star,
   Users,
   TrendingUp,
@@ -28,19 +28,21 @@ const Services = () => {
 
   useEffect(() => {
     setIsVisible(true);
-    fetchServices();
+    // Use default services directly for now
+    setServices(getDefaultServices());
+    setIsLoading(false);
   }, []);
 
   const fetchServices = async () => {
     try {
       setIsLoading(true);
-      const response = await websiteApi.getServices({ 
+      const response = await websiteApi.getServices({
         status: 'active',
         ordering: 'order'
       });
       const data = response?.data;
       const fetchedServices = Array.isArray(data) ? data : (data?.results || []);
-      
+
       // Transform backend data to match frontend format
       const transformedServices = fetchedServices.map((service, index) => ({
         id: service.id,
@@ -59,12 +61,12 @@ const Services = () => {
         bgColor: getBgColorForIndex(index),
         iconColor: getIconColorForIndex(index)
       }));
-      
+
       setServices(transformedServices);
     } catch (err) {
       console.error('Failed to fetch services:', err);
       setError(`Failed to load services: ${err.response?.data?.detail || err.message || 'Network error'}`);
-      setServices([]); // Don't fallback to static data
+      setServices(getDefaultServices()); // Use default services as fallback
     } finally {
       setIsLoading(false);
     }
@@ -79,12 +81,12 @@ const Services = () => {
       'security': Shield,
       'consulting': Settings
     };
-    
+
     const titleLower = title.toLowerCase();
     for (const [key, icon] of Object.entries(iconMap)) {
       if (titleLower.includes(key)) return icon;
     }
-    
+
     // Default icons based on index
     const defaultIcons = [Code2, Globe, Smartphone, Settings, Cloud, Shield];
     return defaultIcons[index % defaultIcons.length];
@@ -93,7 +95,7 @@ const Services = () => {
   const getGradientForIndex = (index) => {
     const gradients = [
       "from-blue-600 to-cyan-600",
-      "from-emerald-600 to-teal-600", 
+      "from-emerald-600 to-teal-600",
       "from-purple-600 to-pink-600",
       "from-orange-600 to-red-600",
       "from-indigo-600 to-blue-600",
@@ -298,7 +300,7 @@ const Services = () => {
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> Digital Reality</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            We don't just build software—we craft digital experiences that propel your business forward. 
+            We don't just build software we craft digital experiences that propel your business forward.
             From concept to deployment, we're your technology partners for success.
           </p>
         </div>
@@ -315,7 +317,7 @@ const Services = () => {
                 </div>
                 <h3 className="text-lg font-semibold text-red-800 mb-2">Unable to Load Services</h3>
                 <p className="text-red-700 mb-4">{error}</p>
-                <button 
+                <button
                   onClick={fetchServices}
                   className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
                 >
@@ -329,7 +331,7 @@ const Services = () => {
         {/* Stats Section */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
           {stats.map((stat, index) => (
-            <div 
+            <div
               key={index}
               className={`text-center transform transition-all duration-1000 delay-${index * 100} ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
             >
@@ -343,91 +345,91 @@ const Services = () => {
         </div>
 
         {/* Services Grid */}
-        {!error && !isLoading && (
+        {!isLoading && (
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mb-16">
-          {services.map((service, index) => {
-            const IconComponent = service.icon;
-            const isActive = activeService === index;
-            
-            return (
-              <div
-                key={service.id}
-                className={`group relative overflow-hidden bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:-translate-y-2 ${isActive ? 'ring-2 ring-blue-500 scale-105' : ''}`}
-                onClick={() => setActiveService(index)}
-                style={{
-                  animationDelay: `${index * 150}ms`
-                }}
-              >
-                {/* Gradient Background */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
-                
-                {/* Content */}
-                <div className="relative p-8">
-                  {/* Icon */}
-                  <div className={`inline-flex items-center justify-center w-16 h-16 ${service.bgColor} rounded-2xl mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
-                    <IconComponent className={`w-8 h-8 ${service.iconColor}`} />
-                  </div>
+            {services.map((service, index) => {
+              const IconComponent = service.icon;
+              const isActive = activeService === index;
 
-                  {/* Title & Subtitle */}
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300">
-                    {service.title}
-                  </h3>
-                  <p className="text-blue-600 font-medium mb-4 text-sm uppercase tracking-wide">
-                    {service.subtitle}
-                  </p>
+              return (
+                <div
+                  key={service.id}
+                  className={`group relative overflow-hidden bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:-translate-y-2 ${isActive ? 'ring-2 ring-blue-500 scale-105' : ''}`}
+                  onClick={() => setActiveService(index)}
+                  style={{
+                    animationDelay: `${index * 150}ms`
+                  }}
+                >
+                  {/* Gradient Background */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
 
-                  {/* Description */}
-                  <p className="text-gray-600 mb-6 leading-relaxed">
-                    {service.description}
-                  </p>
+                  {/* Content */}
+                  <div className="relative p-8">
+                    {/* Icon */}
+                    <div className={`inline-flex items-center justify-center w-16 h-16 ${service.bgColor} rounded-2xl mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
+                      <IconComponent className={`w-8 h-8 ${service.iconColor}`} />
+                    </div>
 
-                  {/* Features */}
-                  <div className="space-y-2 mb-6">
-                    {service.features.slice(0, 3).map((feature, idx) => (
-                      <div key={idx} className="flex items-center gap-3 text-sm text-gray-700">
-                        <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                        {feature}
+                    {/* Title & Subtitle */}
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300">
+                      {service.title}
+                    </h3>
+                    <p className="text-blue-600 font-medium mb-4 text-sm uppercase tracking-wide">
+                      {service.subtitle}
+                    </p>
+
+                    {/* Description */}
+                    <p className="text-gray-600 mb-6 leading-relaxed">
+                      {service.description}
+                    </p>
+
+                    {/* Features */}
+                    <div className="space-y-2 mb-6">
+                      {service.features.slice(0, 3).map((feature, idx) => (
+                        <div key={idx} className="flex items-center gap-3 text-sm text-gray-700">
+                          <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                          {feature}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Technologies */}
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {service.technologies.slice(0, 3).map((tech, idx) => (
+                        <span key={idx} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
+                          {tech}
+                        </span>
+                      ))}
+                      {service.technologies.length > 3 && (
+                        <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-medium">
+                          +{service.technologies.length - 3} more
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Case Study Preview */}
+                    <div className="border-t border-gray-100 pt-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Success Story</p>
+                          <p className="font-semibold text-gray-900">{service.caseStudy.result}</p>
+                        </div>
+                        <ArrowRight className="w-5 h-5 text-blue-600 group-hover:translate-x-1 transition-transform duration-300" />
                       </div>
-                    ))}
-                  </div>
-
-                  {/* Technologies */}
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {service.technologies.slice(0, 3).map((tech, idx) => (
-                      <span key={idx} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
-                        {tech}
-                      </span>
-                    ))}
-                    {service.technologies.length > 3 && (
-                      <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-medium">
-                        +{service.technologies.length - 3} more
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Case Study Preview */}
-                  <div className="border-t border-gray-100 pt-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Success Story</p>
-                        <p className="font-semibold text-gray-900">{service.caseStudy.result}</p>
-                      </div>
-                      <ArrowRight className="w-5 h-5 text-blue-600 group-hover:translate-x-1 transition-transform duration-300" />
                     </div>
                   </div>
-                </div>
 
-                {/* Hover Effect */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-              </div>
-            );
-          })}
-        </div>
+                  {/* Hover Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                </div>
+              );
+            })}
+          </div>
 
         )}
 
         {/* Detailed Service View */}
-        {!error && !isLoading && activeService !== null && services.length > 0 && (
+        {!isLoading && activeService !== null && services.length > 0 && (
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden mb-16 transform transition-all duration-500">
             <div className="grid grid-cols-1 lg:grid-cols-2">
               {/* Left Side - Details */}
@@ -479,19 +481,19 @@ const Services = () => {
                     <Star className="w-4 h-4" />
                     Success Story
                   </div>
-                  
+
                   <h4 className="text-2xl font-bold mb-4">
                     {services[activeService].caseStudy.client}
                   </h4>
-                  
+
                   <div className="text-3xl font-bold mb-4 text-white/90">
                     {services[activeService].caseStudy.result}
                   </div>
-                  
+
                   <p className="text-white/90 text-lg leading-relaxed mb-8">
                     {services[activeService].caseStudy.description}
                   </p>
-                  
+
                   <button className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105">
                     View Full Case Study
                     <ArrowRight className="w-5 h-5" />
@@ -503,7 +505,7 @@ const Services = () => {
         )}
 
         {/* CTA Section */}
-        {!error && !isLoading && (
+        {!isLoading && (
           <div className="text-center bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-white">
             <div className="max-w-3xl mx-auto">
               <h3 className="text-3xl md:text-4xl font-bold mb-6">

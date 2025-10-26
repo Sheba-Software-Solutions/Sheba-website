@@ -1,85 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import NavBar from '../Components/Shared/NavBar';
 import Footer from '../Components/Shared/Footer';
 import AboutSection from '../Components/Home/AboutSection';
 import { 
   Users, 
   Award, 
-  Target, 
-  Heart,
+  Target,
   Code,
   Globe,
   Lightbulb,
-  Shield,
-  Loader2
+  Shield
 } from 'lucide-react';
-import { websiteApi } from '../utils/api';
 import { imageHelpers } from '../utils/imageHelpers';
 import SmartImage from '../Components/ui/SmartImage';
 
 const About = () => {
-  const [team, setTeam] = useState([]);
-  const [isLoadingTeam, setIsLoadingTeam] = useState(true);
-  const [teamError, setTeamError] = useState(null);
-
-  useEffect(() => {
-    fetchTeamMembers();
-  }, []);
-
-  const fetchTeamMembers = async () => {
-    try {
-      setIsLoadingTeam(true);
-      const response = await websiteApi.getTeamMembers({ 
-        status: 'active',
-        ordering: 'order'
-      });
-      const data = response?.data;
-      const fetchedTeam = Array.isArray(data) ? data : (data?.results || []);
-      
-      // Transform backend data to match frontend format
-      const transformedTeam = fetchedTeam.map((member, index) => ({
-        name: member.name,
-        role: member.position || member.role,
-        image: member.image || imageHelpers.getTeamPlaceholder(member.name, member.role, index),
-        bio: member.bio || member.description || "Passionate team member dedicated to excellence."
-      }));
-      
-      setTeam(transformedTeam);
-    } catch (err) {
-      console.error('Failed to fetch team members:', err);
-      setTeamError(`Failed to load team members: ${err.response?.data?.detail || err.message || 'Network error'}`);
-      setTeam([]); // Don't fallback to static data
-    } finally {
-      setIsLoadingTeam(false);
-    }
-  };
-
-  const getDefaultTeam = () => [
+  // Static team data - the real innovators
+  const team = [
     {
-      name: "Abebe Tadesse",
-      role: "CEO & Founder",
-      image: imageHelpers.getTeamPlaceholder("Abebe Tadesse", "CEO & Founder", 0),
-      bio: "Visionary leader with 10+ years in software development and business strategy."
+      name: "Yoseph Tesfaye",
+      role: "Senior Full Stack Engineer and CyberSecurity Analyst at INSA",
+      image: imageHelpers.getTeamPlaceholder("Yoseph Tesfaye", "Senior Full Stack Engineer", 0),
+      bio: "Expert full-stack engineer with extensive cybersecurity expertise at the Information Network Security Agency. Specializes in building secure, scalable applications while ensuring robust protection against digital threats."
     },
     {
-      name: "Meron Haile",
-      role: "CTO",
-      image: imageHelpers.getTeamPlaceholder("Meron Haile", "CTO", 1),
-      bio: "Technical expert specializing in scalable architecture and emerging technologies."
+      name: "Yordanos Zegeye",
+      role: "Mobile App and Web Developer",
+      image: imageHelpers.getTeamPlaceholder("Yordanos Zegeye", "Mobile & Web Developer", 1),
+      bio: "Versatile developer proficient in both mobile and web technologies. Creates seamless cross-platform experiences using modern frameworks like React Native and Flutter, delivering high-performance applications."
     },
     {
-      name: "Daniel Bekele",
-      role: "Lead Developer",
-      image: imageHelpers.getTeamPlaceholder("Daniel Bekele", "Lead Developer", 2),
-      bio: "Full-stack developer passionate about creating elegant, efficient solutions."
+      name: "Eyoab Amare",
+      role: "Solutions Architect and AI Engineer",
+      image: imageHelpers.getTeamPlaceholder("Eyoab Amare", "Solutions Architect", 2),
+      bio: "Innovative solutions architect with deep expertise in artificial intelligence and machine learning. Designs intelligent systems that leverage AI to solve complex business challenges and drive digital transformation."
     },
     {
-      name: "Sara Alemayehu",
-      role: "UI/UX Designer",
-      image: imageHelpers.getTeamPlaceholder("Sara Alemayehu", "UI/UX Designer", 3),
-      bio: "Creative designer focused on user-centered design and exceptional experiences."
+      name: "Henock Eyayalem",
+      role: "UI/UX Designer and Front End Engineer",
+      image: imageHelpers.getTeamPlaceholder("Henock Eyayalem", "UI/UX Designer", 3),
+      bio: "Creative designer and front-end engineer who bridges the gap between design and development. Crafts intuitive user interfaces and implements them with pixel-perfect precision using modern web technologies."
     }
   ];
+
+
 
   const values = [
     {
@@ -117,10 +81,10 @@ const About = () => {
             Building the Future of
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> Ethiopian Tech</span>
           </h1>
-          <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-            Founded in the heart of Addis Ababa, we're on a mission to transform Ethiopia's digital landscape 
+          {/* <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+            Founded in the heart of Ethiopia, we're on a mission to transform Ethiopia's digital landscape 
             through innovative software solutions that empower businesses and communities.
-          </p>
+          </p> */}
         </div>
       </div>
 
@@ -133,7 +97,7 @@ const About = () => {
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-medium mb-6">
               <Target className="w-4 h-4" />
-              Our Values
+              
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               What Drives Us Forward
@@ -164,10 +128,10 @@ const About = () => {
       <section className="py-20 bg-gradient-to-br from-gray-50 via-white to-blue-50">
         <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium mb-6">
+            {/* <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium mb-6">
               <Users className="w-4 h-4" />
-              Our Team
-            </div>
+              
+            </div> */}
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Meet the Innovators
             </h2>
@@ -176,61 +140,29 @@ const About = () => {
             </p>
           </div>
 
-          {/* Loading State */}
-          {isLoadingTeam && (
-            <div className="flex justify-center items-center py-20">
-              <Loader2 className="text-4xl text-blue-600 animate-spin" />
-            </div>
-          )}
-
-          {/* Error State */}
-          {teamError && !isLoadingTeam && (
-            <div className="text-center py-20">
-              <div className="max-w-md mx-auto">
-                <div className="bg-red-50 border border-red-200 rounded-lg p-8">
-                  <div className="text-red-600 mb-4">
-                    <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-semibold text-red-800 mb-2">Unable to Load Team</h3>
-                  <p className="text-red-700 mb-4">{teamError}</p>
-                  <button 
-                    onClick={fetchTeamMembers}
-                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
-                  >
-                    Try Again
-                  </button>
+          {/* Team Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {team.map((member, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden"
+              >
+                <div className="aspect-square overflow-hidden">
+                  <SmartImage
+                    src={member.image}
+                    alt={member.name}
+                    fallback={imageHelpers.getTeamPlaceholder(member.name, member.role, index)}
+                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{member.name}</h3>
+                  <p className="text-blue-600 font-medium mb-3">{member.role}</p>
+                  <p className="text-gray-600 text-sm leading-relaxed">{member.bio}</p>
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* Team Grid */}
-          {!isLoadingTeam && !teamError && team.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {team.map((member, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden"
-                >
-                  <div className="aspect-square overflow-hidden">
-                    <SmartImage
-                      src={member.image}
-                      alt={member.name}
-                      fallback={imageHelpers.getTeamPlaceholder(member.name, member.role, index)}
-                      className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{member.name}</h3>
-                    <p className="text-blue-600 font-medium mb-3">{member.role}</p>
-                    <p className="text-gray-600 text-sm leading-relaxed">{member.bio}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+            ))}
+          </div>
         </div>
       </section>
 

@@ -47,9 +47,9 @@ const ServicesSection = () => {
               Our <span className="text-amber-900">Services</span>
             </h2>
             <div className="w-24 h-1 bg-amber-900 mx-auto mb-6"></div>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            {/* <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               Comprehensive technology solutions designed to meet the specific needs of Ethiopian businesses and organizations.
-            </p>
+            </p> */}
           </div>
           <div className="flex justify-center items-center py-20">
             <FaSpinner className="text-4xl text-amber-900 animate-spin" />

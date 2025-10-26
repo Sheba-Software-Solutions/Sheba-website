@@ -1,4 +1,5 @@
-import { cn } from "../../Utils/classMerger";
+// Simple class merger utility
+const cn = (...classes) => classes.filter(Boolean).join(' ');
 
 const Button = ({ children, className = "", variant, ...rest }) => {
   const base =
