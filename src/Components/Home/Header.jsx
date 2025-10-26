@@ -37,33 +37,40 @@ const Header = () => {
         ].map((line, index) => (
           <div
             key={index}
-            className={`block overflow-hidden relative ${isVisible ? 'animate-lineFadeIn' : 'opacity-0 translate-y-10'}`}
+            className={`block overflow-visible relative ${isVisible ? 'animate-lineFadeIn' : 'opacity-0 translate-y-10'}`}
             style={{ animationDelay: `${index * 0.2}s` }}
           >
             {line.split(' ').map((word, wordIndex, words) => (
               <span
                 key={wordIndex}
-                className={`inline-block mr-2 ${
+                className={`inline-block mr-3 ${
                   word === 'ETHIOPIA' 
-                    ? 'bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent font-black' 
+                    ? 'text-blue-700 font-black' 
                     : 'text-gray-800'
                 }`}
                 style={{ 
-                  textShadow: word === 'ETHIOPIA' ? 'none' : '1px 1px 2px rgba(0, 0, 0, 0.1)',
-                  fontFamily: "'Inter', 'system-ui', '-apple-system', 'sans-serif'"
+                  textShadow: word === 'ETHIOPIA' ? '2px 2px 4px rgba(59, 130, 246, 0.3)' : '1px 1px 2px rgba(0, 0, 0, 0.1)',
+                  fontFamily: "'Inter', 'system-ui', '-apple-system', 'sans-serif'",
+                  letterSpacing: word === 'ETHIOPIA' ? '0.1em' : 'normal',
+                  fontWeight: word === 'ETHIOPIA' ? '900' : 'bold'
                 }}
               >
                 {word.split('').map((char, charIndex) => (
                   <span
                     key={charIndex}
                     className={`inline-block ${word === 'ETHIOPIA' && char === 'E' ? 'animate-pulseChar' : ''}`}
+                    style={{ 
+                      marginRight: word === 'ETHIOPIA' ? '0.05em' : '0',
+                      display: 'inline-block',
+                      minWidth: word === 'ETHIOPIA' && char === 'E' ? '0.8em' : 'auto'
+                    }}
                   >
                     {char}
                   </span>
                 ))}
                 {wordIndex === words.length - 1 && (
                   <span
-                    className={`inline-block w-1 h-6 bg-blue-600 ml-1 ${isVisible ? 'animate-cursorBlink' : 'opacity-0'}`}
+                    className={`inline-block w-1 h-6 bg-blue-600 ml-2 ${isVisible ? 'animate-cursorBlink' : 'opacity-0'}`}
                     style={{ animationDelay: `${index * 0.2 + words.length * 0.1}s` }}
                   ></span>
                 )}

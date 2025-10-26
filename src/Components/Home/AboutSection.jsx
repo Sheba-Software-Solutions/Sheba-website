@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Target, Eye, Award, Users, Globe, ArrowRight, CheckCircle, Sparkles } from 'lucide-react';
+import { Target, Eye, Award, Users, Globe, ArrowRight, CheckCircle } from 'lucide-react';
 
 const AboutSection = () => {
   const [isVisible, setIsVisible] = useState({ mission: false, vision: false, main: false });
@@ -79,14 +79,6 @@ const AboutSection = () => {
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24 relative">
         {/* Header Section */}
         <div className={`text-center mb-16 transform transition-all duration-1000 ${getVisibilityClass('main')}`}>
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-6">
-            <Sparkles className="w-4 h-4" />
-            Our Story
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            About <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Sheba</span> Software Solutions
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-8 rounded-full"></div>
           <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
             Founded in <span className="font-semibold text-blue-600">Addis Ababa</span>, we are Ethiopia's premier software development company committed to driving digital transformation across industries.
           </p>

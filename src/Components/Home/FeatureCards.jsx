@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Smile, Rocket, Users, ArrowRight, Sparkles, Star } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import FeatureCard from './FeatureCard';
 
 const FeatureCards = () => {
@@ -28,8 +28,7 @@ const FeatureCards = () => {
       bgColor: 'bg-gradient-to-br from-gray-900 via-gray-800 to-black',
       title: (
         <div className="flex flex-col space-y-2">
-          <div className="flex items-center gap-2 mb-4">
-            <Sparkles className={`w-8 h-8 text-blue-400 ${isVisible ? 'animate-pulse' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }} />
+          <div className="mb-4">
             <span className={`text-sm text-blue-400 font-medium ${isVisible ? 'animate-fadeInRight' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
               Our Portfolio
             </span>
@@ -50,33 +49,18 @@ const FeatureCards = () => {
     {
       bgColor: 'bg-gradient-to-br from-blue-50 via-white to-purple-50',
       title: (
-        <div className="flex justify-between items-start">
-          <div className="flex flex-col space-y-2">
-            <div className="flex items-center gap-2 mb-4">
-              <Users className={`w-8 h-8 text-blue-600 ${isVisible ? 'animate-bounce' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }} />
-              <span className={`text-sm text-blue-600 font-medium ${isVisible ? 'animate-fadeInRight' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
-                Career Opportunities
-              </span>
-            </div>
-            <span className={`text-3xl font-bold text-gray-900 ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.4s' }}>
-              Join Our
-            </span>
-            <span className={`text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.6s' }}>
-              Elite Team
+        <div className="flex flex-col space-y-2">
+          <div className="mb-4">
+            <span className={`text-sm text-blue-600 font-medium ${isVisible ? 'animate-fadeInRight' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
+              Career Opportunities
             </span>
           </div>
-          <div className="text-blue-600 relative">
-            <div className={`flex space-x-1 ${isVisible ? 'animate-twinkle' : 'opacity-0'}`} style={{ animationDelay: '0.8s' }}>
-              <Star className="w-6 h-6 fill-current" />
-              <Star className="w-6 h-6 fill-current" />
-              <Star className="w-6 h-6 fill-current" />
-            </div>
-            <Smile
-              size={40}
-              className={`mt-3 text-yellow-500 ${isVisible ? 'animate-spinIn' : 'opacity-0'}`}
-              style={{ animationDelay: '1s' }}
-            />
-          </div>
+          <span className={`text-3xl font-bold text-gray-900 ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.4s' }}>
+            Join Our
+          </span>
+          <span className={`text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.6s' }}>
+            Elite Team
+          </span>
         </div>
       ),
       description: 'Shape the future of Ethiopian tech industry with passionate innovators and cutting-edge projects.',
@@ -88,34 +72,21 @@ const FeatureCards = () => {
     {
       bgColor: 'bg-gradient-to-br from-gray-900 via-blue-900 to-black',
       title: (
-        <div className="flex justify-between items-start relative">
-          <div className="flex flex-col space-y-2">
-            <div className="flex items-center gap-2 mb-4">
-              <Rocket className={`w-8 h-8 text-green-400 ${isVisible ? 'animate-rocket' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }} />
-              <span className={`text-sm text-green-400 font-medium ${isVisible ? 'animate-fadeInRight' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
-                Let's Build Together
-              </span>
-            </div>
-            <span className={`text-3xl font-bold text-white ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.4s' }}>
-              Have a
-            </span>
-            <span className={`text-3xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.6s' }}>
-              Vision?
-            </span>
-            <span className={`text-2xl font-bold text-white ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.8s' }}>
-              Let's Make It Reality
+        <div className="flex flex-col space-y-2">
+          <div className="mb-4">
+            <span className={`text-sm text-green-400 font-medium ${isVisible ? 'animate-fadeInRight' : 'opacity-0'}`} style={{ animationDelay: '0.3s' }}>
+              Let's Build Together
             </span>
           </div>
-          <div className="relative">
-            <div
-              className={`absolute -top-8 -right-4 w-16 h-16 bg-gradient-to-br from-green-400 to-blue-400 rounded-full ${isVisible ? 'animate-orbit' : 'opacity-0'}`}
-              style={{ animationDelay: '1s' }}
-            ></div>
-            <div
-              className={`absolute -top-4 right-2 w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full ${isVisible ? 'animate-orbit-reverse' : 'opacity-0'}`}
-              style={{ animationDelay: '1.2s' }}
-            ></div>
-          </div>
+          <span className={`text-3xl font-bold text-white ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.4s' }}>
+            Have a
+          </span>
+          <span className={`text-3xl font-bold bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.6s' }}>
+            Vision?
+          </span>
+          <span className={`text-2xl font-bold text-white ${isVisible ? 'animate-typewriter' : 'opacity-0'}`} style={{ animationDelay: '0.8s' }}>
+            Let's Make It Reality
+          </span>
         </div>
       ),
       description: 'Transform your ideas into powerful digital solutions that drive growth and innovation.',

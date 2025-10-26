@@ -13,7 +13,15 @@ import {
   Code,
   Palette,
   Shield,
-  Zap
+  Zap,
+  X,
+  Upload,
+  Mail,
+  Phone,
+  User,
+  FileText,
+  Send,
+  CheckCircle
 } from 'lucide-react';
 
 const Careers = () => {
@@ -21,6 +29,26 @@ const Careers = () => {
   const [jobs, setJobs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Application modal state
+  const [showApplicationModal, setShowApplicationModal] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [applicationSuccess, setApplicationSuccess] = useState(false);
+  
+  // Application form data
+  const [applicationData, setApplicationData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone: '',
+    cover_letter: '',
+    portfolio_url: '',
+    linkedin_url: '',
+    years_of_experience: '',
+    current_position: '',
+    current_company: ''
+  });
 
   useEffect(() => {
     fetchJobs();
@@ -138,6 +166,66 @@ const Careers = () => {
   const filteredJobs = selectedDepartment === 'All' 
     ? jobs 
     : jobs.filter(job => job.department === selectedDepartment);
+
+  // Application modal handlers
+  const handleApplyClick = (job) => {
+    setSelectedJob(job);
+    setShowApplicationModal(true);
+    setApplicationSuccess(false);
+  };
+
+  const handleCloseModal = () => {
+    setShowApplicationModal(false);
+    setSelectedJob(null);
+    setApplicationData({
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone: '',
+      cover_letter: '',
+      portfolio_url: '',
+      linkedin_url: '',
+      years_of_experience: '',
+      current_position: '',
+      current_company: ''
+    });
+    setApplicationSuccess(false);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setApplicationData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmitApplication = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const submitData = {
+        ...applicationData,
+        job_id: selectedJob.id,
+        years_of_experience: parseInt(applicationData.years_of_experience) || 0
+      };
+
+      await websiteApi.applyForJob(submitData);
+      setApplicationSuccess(true);
+      
+      // Reset form after successful submission
+      setTimeout(() => {
+        handleCloseModal();
+      }, 3000);
+      
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      alert('Failed to submit application. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -286,7 +374,10 @@ const Careers = () => {
 
                 <div className="flex items-center justify-between">
                   <div className="text-lg font-bold text-green-600">{job.salary}</div>
-                  <button className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all duration-200 hover:scale-105">
+                  <button 
+                    onClick={() => handleApplyClick(job)}
+                    className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all duration-200 hover:scale-105"
+                  >
                     Apply Now
                     <ArrowRight className="w-4 h-4" />
                   </button>
@@ -326,6 +417,247 @@ const Careers = () => {
       </section>
 
       <Footer />
+
+      {/* Application Modal */}
+      {showApplicationModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Apply for Position</h2>
+                  {selectedJob && (
+                    <p className="text-gray-600 mt-1">{selectedJob.title} - {selectedJob.department}</p>
+                  )}
+                </div>
+                <button 
+                  onClick={handleCloseModal}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6">
+              {applicationSuccess ? (
+                <div className="text-center py-8">
+                  <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Application Submitted!</h3>
+                  <p className="text-gray-600 mb-4">
+                    Thank you for your interest in joining our team. We'll review your application and get back to you soon.
+                  </p>
+                  <p className="text-sm text-gray-500">This window will close automatically in a few seconds.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmitApplication} className="space-y-6">
+                  {/* Personal Information */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          First Name *
+                        </label>
+                        <div className="relative">
+                          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                          <input
+                            type="text"
+                            name="first_name"
+                            value={applicationData.first_name}
+                            onChange={handleInputChange}
+                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Enter your first name"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Last Name *
+                        </label>
+                        <div className="relative">
+                          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                          <input
+                            type="text"
+                            name="last_name"
+                            value={applicationData.last_name}
+                            onChange={handleInputChange}
+                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Enter your last name"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Contact Information */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Email Address *
+                      </label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <input
+                          type="email"
+                          name="email"
+                          value={applicationData.email}
+                          onChange={handleInputChange}
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="your.email@example.com"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Phone Number *
+                      </label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={applicationData.phone}
+                          onChange={handleInputChange}
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="+251 9XX XXX XXX"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Professional Information */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Professional Information</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Years of Experience
+                        </label>
+                        <input
+                          type="number"
+                          name="years_of_experience"
+                          value={applicationData.years_of_experience}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="0"
+                          min="0"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Current Position
+                        </label>
+                        <input
+                          type="text"
+                          name="current_position"
+                          value={applicationData.current_position}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="e.g. Software Developer"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Current Company
+                        </label>
+                        <input
+                          type="text"
+                          name="current_company"
+                          value={applicationData.current_company}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="Company name"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Links */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Portfolio URL
+                      </label>
+                      <input
+                        type="url"
+                        name="portfolio_url"
+                        value={applicationData.portfolio_url}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="https://your-portfolio.com"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        LinkedIn Profile
+                      </label>
+                      <input
+                        type="url"
+                        name="linkedin_url"
+                        value={applicationData.linkedin_url}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="https://linkedin.com/in/yourprofile"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Cover Letter */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Cover Letter *
+                    </label>
+                    <textarea
+                      name="cover_letter"
+                      value={applicationData.cover_letter}
+                      onChange={handleInputChange}
+                      rows={6}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Tell us why you're interested in this position and what makes you a great fit for our team..."
+                      required
+                    />
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="flex items-center justify-end gap-4 pt-6 border-t border-gray-200">
+                    <button
+                      type="button"
+                      onClick={handleCloseModal}
+                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          Submit Application
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
