@@ -64,10 +64,10 @@ const AboutSection = () => {
   };
 
   return (
-    <section 
+    <section
       ref={mainRef}
       data-card="main"
-      id="about" 
+      id="about"
       className="py-20 bg-gradient-to-br from-blue-50 via-white to-gray-50 relative overflow-hidden"
     >
       {/* Background decorative elements */}
@@ -133,7 +133,7 @@ const AboutSection = () => {
                 Our <span className="text-blue-600">Ethiopian</span> Heritage,{' '}
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Global</span> Standards
               </h3>
-              
+
               <p className="text-gray-600 text-lg leading-relaxed mb-8">
                 Sheba Software Solutions was born from a vision to bridge the technological gap in Ethiopia while preserving our rich cultural heritage. We combine local expertise with international best practices to deliver solutions that work in the Ethiopian context.
               </p>
@@ -153,9 +153,8 @@ const AboutSection = () => {
                 <div
                   ref={missionRef}
                   data-card="mission"
-                  className={`group relative bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 ${
-                    hasLoaded || isVisible.mission ? 'animate-fadeIn' : 'opacity-0 translate-y-5'
-                  }`}
+                  className={`group relative bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 ${hasLoaded || isVisible.mission ? 'animate-fadeIn' : 'opacity-0 translate-y-5'
+                    }`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-blue-800/20 rounded-2xl"></div>
                   <div className="relative">
@@ -172,9 +171,8 @@ const AboutSection = () => {
                 <div
                   ref={visionRef}
                   data-card="vision"
-                  className={`group relative bg-gradient-to-br from-purple-600 to-purple-700 text-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 ${
-                    hasLoaded || isVisible.vision ? 'animate-fadeIn' : 'opacity-0 translate-y-5'
-                  }`}
+                  className={`group relative bg-gradient-to-br from-purple-600 to-purple-700 text-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 ${hasLoaded || isVisible.vision ? 'animate-fadeIn' : 'opacity-0 translate-y-5'
+                    }`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-purple-800/20 rounded-2xl"></div>
                   <div className="relative">
