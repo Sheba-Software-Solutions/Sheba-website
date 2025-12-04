@@ -14,7 +14,8 @@ import {
   TrendingUp,
   Cpu,
   Database,
-  Loader2
+  Loader2,
+  DivideCircleIcon
 } from 'lucide-react';
 import { websiteApi } from '../../utils/api';
 import { imageHelpers } from '../../utils/imageHelpers';
@@ -529,5 +530,6 @@ const Services = () => {
     </div>
   );
 };
+
 
 export default Services; 
